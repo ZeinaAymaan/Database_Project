@@ -1,61 +1,60 @@
-﻿create database ehna;
+create database ehna;
+USE ehna
 
-
-create table S_User(
+GO
+CREATE PROCEDURE createAllTables
+AS
+create table systemUser(
 username varchar(20) not null primary key,
 password varchar(20) not null
 );
 
-
-create table System_Admin(
+create table systemAdmin(
 ID int not null Identity primary key,
 Name varchar(20) not null,
 
 username varchar(20) not null
-constraint SA_inheretance foreign key(username) references S_User(username)
+constraint SA_inheretance foreign key(username) references systemUser(username)
 on delete cascade
 on update cascade,
 
 password varchar(20) not null,
 );
 
-
-create table Sports_Assocciation_Manager(
+create table sportsAssociationManager(
 ID int not null Identity primary key,
 Name varchar(20) not null,
 
 username varchar(20) not null
-constraint SAM_inheretance foreign key(username) references S_User(username)
+constraint SAM_inheretance foreign key(username) references systemUser(username)
 on delete cascade
 on update cascade,
 
 password varchar(20) not null,
 );
-
 
 create table Stadium(
 ID int not null Identity primary key,
 Name varchar(20) not null,
-Capacity int not null,
 Location varchar(20) not null,
+Capacity int not null,
 Status bit not null
 );
 
 
-create table Stadium_Manager(
+create table stadiumManager(
 ID int not null identity primary key,
 Name varchar(20) not null,
 
 username varchar(20) not null
-constraint SM_inheretance foreign key(username) references S_User(username)
+constraint SM_inheretance foreign key(username) references systemUser(username)
 on delete cascade
 on update cascade,
 
 password varchar(20) not null,
 
 Stadium_ID int not null
-constraint stadium_SM_fk foreign key(Stadium_ID)
-references Stadium(ID)
+constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
 on update cascade
 on delete cascade
 );
@@ -68,20 +67,19 @@ Location varchar(20) not null,
 );
 
 
-create table Club_Representative(
+create table clubRepresentative(
 ID int not null Identity primary key,
 Name varchar(20) not null,
 
 Username varchar(20) not null
-constraint CR_inheretance foreign key (Username)
-references S_User(username)
+constraint CR_inheretance foreign key (Username) references systemUser(username)
 on delete cascade
 on update cascade,
 
 Password varchar(20) not null,
 
-Club_ID int not null
-constraint Club_CR_fk foreign key(Club_ID) 
+club_ID int not null
+constraint Club_CR_fk foreign key(club_ID) 
 references Club(ID)
 on delete cascade
 on update cascade
@@ -89,28 +87,27 @@ on update cascade
 
 
 create table Fan(
-Nationa_ID int not null primary key,
+national_ID int not null primary key,
 Name varchar(20) not null,
 Address varchar(20) not null,
-Phone_No varchar(20) not null,
-Birth_Date date not null,
+phone_no varchar(20) not null,
+birth_date date not null,
 Status bit not null
 );
 
 
 create table Match(
 ID int not null Identity primary key,
-Start_Time time not null,
-End_Time time not null,
+startTime time not null,
+endTime time not null,
 
-Stadium_ID int not null
-constraint Match_Stadium_fk foreign key(Stadium_ID)
-references Stadium(ID)
+stadium_ID int not null
+constraint Match_Stadium_fk foreign key(stadium_ID)references Stadium(ID)
 on delete cascade
 on update cascade,
 
-Guest_ID int 
-constraint Club_Guest_fk foreign key(Guest_ID)
+guest_ID int 
+constraint Club_Guest_fk foreign key(guest_ID)
 references Club(ID)
 on delete no action
 on update no action,
@@ -119,26 +116,27 @@ Host_ID int
 constraint Club_Host_fk foreign key(Host_ID)
 references Club(ID)
 on delete no action
-on update no action
+on update no action,
+
+check(Guest_ID <> Host_ID)
+
 );
 
-alter table Match
-add check(Guest_ID <> Host_ID);
 
-
-create table Request(
+create table hostRequest(
+ID int IDENTITY,
 CR_ID int not null,
 SM_ID int not null,
 
-constraint Request_pk primary key(CR_ID, SM_ID),
+constraint Request_pk primary key(ID),
 
 constraint Request_CR_fk foreign key(CR_ID)
-references Club_Representative(ID)
+references clubRepresentative(ID)
 on delete cascade
 on update cascade,
 
 constraint Request_SM_fk foreign key(SM_ID)
-references Stadium_Manager(ID)
+references stadiumManager(ID)
 on delete no action
 on update no action,
 
@@ -152,7 +150,7 @@ Status varchar(20) not null default 'unhandled'
 );
 
 
-create table Tickets(
+create table Ticket(
 ID int not null Identity primary key,
 Status bit not null,
 
@@ -161,19 +159,147 @@ constraint Tickets_Match_fk foreign key(Match_ID)
 references Match(ID)
 on delete cascade
 on update cascade,
-
-Fan_ID int
-constraint Tickets_Fan_fk foreign key(Fan_ID)
-references Fan(Nationa_ID)
-on delete set null
-on update cascade
 );
 
+CREATE TABLE ticketBuyingTransaction(
+fanNationalID INT,
+ticketID INT,
+CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(national_ID),
+CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID),
+CONSTRAINT buy_pk PRIMARY KEY(fanNationalID,ticketID)
+);
 
+EXEC createAllTables
 
---select * from Stadium_Manager;
+GO
+CREATE PROCEDURE dropAllTables
+AS
+IF object_id('dbo.ticketBuyingTransaction') IS NOT NULL
+         DROP TABLE ticketBuyingTransaction;
+IF object_id('dbo.Ticket') IS NOT NULL
+         DROP TABLE Ticket;
+IF object_id('dbo.hostRequest') IS NOT NULL
+         DROP TABLE hostRequest;
+IF object_id('dbo.Match') IS NOT NULL
+         DROP TABLE Match;       
+IF object_id('dbo.Fan') IS NOT NULL
+         DROP TABLE Fan;
+IF object_id('dbo.clubRepresentative') IS NOT NULL
+         DROP TABLE clubRepresentative;
+IF object_id('dbo.Club') IS NOT NULL
+         DROP TABLE Club;
+IF object_id('dbo.stadiumManager') IS NOT NULL
+         DROP TABLE stadiumManager;
+IF object_id('dbo.Stadium') IS NOT NULL
+         DROP TABLE Stadium;
+IF object_id('dbo.sportsAssociationManager') IS NOT NULL
+         DROP TABLE sportsAssociationManager;         
+IF object_id('dbo.systemAdmin') IS NOT NULL
+         DROP TABLE systemAdmin;
+IF object_id('dbo.systemUser') IS NOT NULL
+         DROP TABLE systemUser;
+         
+EXEC dropAllTables
 
+GO
+CREATE PROCEDURE clearAllTables
+AS
+--lazem nsheel kol el foreign key constraints abl ma n-truncate el table
+ALTER TABLE ticketBuyingTransaction
+DROP CONSTRAINT buyFanID,buyTicketID 
+TRUNCATE TABLE ticketBuyingTransaction
 
-SELECT *
-FROM sys.objects
-WHERE type_desc = 'USER_TABLE'
+ALTER TABLE Ticket
+DROP CONSTRAINT Tickets_Match_fk
+TRUNCATE TABLE Ticket
+
+ALTER TABLE hostRequest
+DROP CONSTRAINT Request_CR_fk, Request_SM_fk, Request_Match_fk
+TRUNCATE TABLE hostRequest
+
+ALTER TABLE Match
+DROP CONSTRAINT Match_Stadium_fk,Club_Guest_fk,Club_Host_fk
+TRUNCATE TABLE Match
+
+TRUNCATE TABLE Fan
+
+ALTER TABLE clubRepresentative
+DROP CONSTRAINT CR_inheretance,Club_CR_fk
+TRUNCATE TABLE clubRepresentative
+
+TRUNCATE TABLE Club
+
+ALTER TABLE stadiumManager
+DROP CONSTRAINT SM_inheretance, stadium_SM_fk
+TRUNCATE TABLE stadiumManager
+
+TRUNCATE TABLE Stadium
+
+ALTER TABLE sportsAssociationManager
+DROP CONSTRAINT SAM_inheretance
+TRUNCATE TABLE sportsAssociationManager
+
+ALTER TABLE systemAdmin
+DROP CONSTRAINT SA_inheretance
+TRUNCATE TABLE systemAdmin
+
+TRUNCATE TABLE systemUser
+--hena baraga3 el constraints 3shan manbawazsh el donya
+ALTER TABLE ticketBuyingTransaction ADD
+CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(national_ID),
+CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID)
+
+ALTER TABLE Ticket ADD
+CONSTRAINT Tickets_Match_fk foreign key(Match_ID) references Match(ID)
+on delete cascade
+on update cascade
+
+ALTER TABLE hostRequest ADD
+CONSTRAINT Request_CR_fk foreign key(CR_ID) references clubRepresentative(ID)
+on delete cascade
+on update cascade,
+constraint Request_SM_fk foreign key(SM_ID)references stadiumManager(ID)
+on delete no action
+on update no action,
+constraint Request_Match_fk foreign key(Match_ID) references Match(ID)
+on delete cascade
+on update cascade
+ 
+ALTER TABLE Match ADD
+CONSTRAINT  Match_Stadium_fk foreign key(stadium_ID) references Stadium(ID)
+on delete cascade
+on update cascade,
+constraint Club_Guest_fk foreign key(guest_ID) references Club(ID)
+on delete no action
+on update no action,
+constraint Club_Host_fk foreign key(Host_ID) references Club(ID)
+on delete no action
+on update no action
+
+ALTER TABLE clubRepresentative ADD 
+CONSTRAINT CR_inheretance foreign key (Username) references systemUser(username)
+on delete cascade
+on update cascade,
+constraint Club_CR_fk foreign key(club_ID) references Club(ID)
+on delete cascade
+on update cascade
+
+ALTER TABLE stadiumManager ADD
+constraint SM_inheretance foreign key(username) references systemUser(username)
+on delete cascade
+on update cascade,
+constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
+on update cascade
+on delete cascade
+
+ALTER TABLE sportsAssociationManager ADD
+constraint SAM_inheretance foreign key(username) references systemUser(username)
+on delete cascade
+on update cascade
+
+ALTER TABLE systemAdmin ADD
+constraint SA_inheretance foreign key(username) references systemUser(username)
+on delete cascade
+on update cascade
+
+EXEC clearAllTables
