@@ -98,10 +98,10 @@ Status bit not null
 
 create table Match(
 ID int not null Identity primary key,
-startTime time not null,
-endTime time not null,
+startTime datetime not null,
+endTime datetime,
 
-stadium_ID int not null
+stadium_ID int
 constraint Match_Stadium_fk foreign key(stadium_ID)references Stadium(ID)
 on delete cascade
 on update cascade,
@@ -354,6 +354,40 @@ FROM hostRequest
 INNER JOIN stadiumManager ON stadiumManager.ID = hostRequest.SM_ID
 INNER JOIN clubRepresentative ON clubRepresentative.ID = hostRequest.CR_ID
 GO
+
+create procedure addAssociationManager 
+@name varchar(20), @username varchar(20), @password varchar(20)
+as
+insert into sportsAssociationManager
+values (@name, @username, @password);
+
+go
+
+create procedure addNewMatch
+@club1 varchar(20), @club2 varchar(20), @host varchar(20), @time datetime
+as
+declare @id1 int, @id2 int;
+
+select @id1 = c.ID
+from Club c
+where c.Name = @host;
+
+select @id2 = c.ID
+from Club c
+where (c.name = @club1 and @club2 = @host) or (c.name = @club2 and @club1 = @host);
+
+insert into Match(startTime, Host_ID, guest_ID)
+values(@time, @id1, @id2);
+
+
+
+
+
+
+
+
+
+
 
 SELECT *
 FROM sys.objects
