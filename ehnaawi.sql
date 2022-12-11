@@ -295,5 +295,67 @@ EXEC clearAllTables
 GO
 CREATE VIEW allAssocManagers AS
 SELECT username,Name FROM sportsAssociationManager
+GO
 
-SELECT* FROM allAssocManagers
+exec createAllTables;
+
+GO
+CREATE VIEW allClubRepresentatives
+AS
+SELECT clubRepresentative.username,clubRepresentative.Name,Club.Name as 'Club Represented'
+FROM clubRepresentative
+INNER JOIN Club ON clubRepresentative.club_ID = Club.ID
+GO
+
+CREATE VIEW allStadiumManagers
+AS
+SELECT stadiumManager.username, stadiumManager.Name, Stadium.Name as 'Stadium Managed'
+FROM stadiumManager
+INNER JOIN Stadium ON stadiumManager.Stadium_ID= Stadium.ID
+GO
+
+CREATE VIEW allFans
+AS 
+SELECT Name, national_ID, birth_date, Status
+FROM Fan
+Go
+
+CREATE VIEW allMatches
+AS
+SELECT Club1.Name as 'First Competing Club' , Club2.Name as 'Second Competing Club', Club1.Name as 'Host Club', startTime, endTime
+FROM Match
+INNER JOIN Club Club1 ON Club1.ID = Match.Host_ID 
+INNER JOIN Club Club2 ON Club2.ID = Match.guest_ID 
+GO
+
+CREATE VIEW allTickets
+AS 
+SELECT [First Competing Club], [Second Competing Club], Stadium.Name as 'Stadium Name', allMatches.startTime, allMatches.endTime
+FROM allMatches, Match
+INNER JOIN Stadium ON Match.stadium_ID = Stadium.ID
+GO
+
+CREATE VIEW allCLubs
+AS
+SELECT Name, Location
+FROM Club
+Go
+
+CREATE VIEW allStadiums
+AS
+SELECT Name, Location, Status
+FROM Stadium
+GO
+
+CREATE VIEW allRequests
+AS
+SELECT Status, stadiumManager.Name as 'Stadium Manager Name' , clubRepresentative.Name as 'Club Representative Name'
+FROM hostRequest
+INNER JOIN stadiumManager ON stadiumManager.ID = hostRequest.SM_ID
+INNER JOIN clubRepresentative ON clubRepresentative.ID = hostRequest.CR_ID
+GO
+
+SELECT *
+FROM sys.objects
+WHERE type_desc = 'USER_TABLE'
+
