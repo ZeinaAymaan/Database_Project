@@ -38,7 +38,7 @@ ID int not null Identity primary key,
 Name varchar(20) not null,
 Location varchar(20) not null,
 Capacity int not null,
-Status bit not null
+Status bit default 'false'
 );
 
 
@@ -152,7 +152,7 @@ Status varchar(20) not null default 'unhandled'
 
 create table Ticket(
 ID int not null Identity primary key,
-Status bit not null,
+Status bit default 'false',
 
 Match_ID int not null
 constraint Tickets_Match_fk foreign key(Match_ID)
@@ -169,25 +169,30 @@ CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID),
 CONSTRAINT buy_pk PRIMARY KEY(fanNationalID,ticketID)
 );
 
+go
+
 EXEC createAllTables
 
 GO
 CREATE PROCEDURE dropAllTables
 AS
-         DROP TABLE ticketBuyingTransaction;
-         DROP TABLE Ticket;
-         DROP TABLE hostRequest;
-         DROP TABLE Match;       
-         DROP TABLE Fan;
-         DROP TABLE clubRepresentative;
-         DROP TABLE Club;
-         DROP TABLE stadiumManager;
-         DROP TABLE Stadium;
-         DROP TABLE sportsAssociationManager;         
-         DROP TABLE systemAdmin;
-         DROP TABLE systemUser;
+
+        DROP TABLE ticketBuyingTransaction;
+        DROP TABLE Ticket;
+        DROP TABLE hostRequest;
+        DROP TABLE Match; 
+        DROP TABLE Fan;
+        DROP TABLE clubRepresentative;
+        DROP TABLE Club;
+        DROP TABLE stadiumManager;
+        DROP TABLE Stadium;
+        DROP TABLE sportsAssociationManager;         
+        DROP TABLE systemAdmin;
+        DROP TABLE systemUser;
          
-EXEC dropAllTables
+exec dropAllTables;
+Go
+
 
 GO
 CREATE PROCEDURE clearAllTables
@@ -290,28 +295,57 @@ constraint SA_inheretance foreign key(username) references systemUser(username)
 on delete cascade
 on update cascade
 
+go
+
 EXEC clearAllTables
+
+go
+create procedure dropAllProceduresFunctionsViews As
+
+drop procedure createAllTables;
+drop procedure dropAllTables;
+drop procedure clearAllTables;
+drop procedure addAssociationManager;
+drop procedure addNewMatch;
+drop procedure deleteMatch;
+drop procedure deleteMatchesOnStadium;
+drop procedure addClub;
+drop procedure addTicket;
+drop procedure deleteClub;
+drop procedure addStadium;
+drop procedure deleteStadium;
+
+drop view allAssocManagers;
+drop view allClubRepresentatives;
+drop view allCLubs;
+drop view allFans;
+drop view allMatches;
+drop view allRequests;
+drop view allStadiumManagers;
+drop view allStadiums;
+drop view allTickets;
+drop view clubsWithNoMatches;
+
 
 GO
 CREATE VIEW allAssocManagers AS
 SELECT username,Name FROM sportsAssociationManager
 GO
 
-exec createAllTables;
 
 GO
 CREATE VIEW allClubRepresentatives
 AS
-SELECT clubRepresentative.username,clubRepresentative.Name,Club.Name as 'Club Represented'
-FROM clubRepresentative
-INNER JOIN Club ON clubRepresentative.club_ID = Club.ID
+SELECT cr.username,cr.Name,Club.Name as 'Club Represented'
+FROM clubRepresentative cr
+INNER JOIN Club ON cr.club_ID = Club.ID
 GO
 
 CREATE VIEW allStadiumManagers
 AS
-SELECT stadiumManager.username, stadiumManager.Name, Stadium.Name as 'Stadium Managed'
-FROM stadiumManager
-INNER JOIN Stadium ON stadiumManager.Stadium_ID= Stadium.ID
+SELECT sm.username, sm.Name, Stadium.Name as 'Stadium Managed'
+FROM stadiumManager sm
+INNER JOIN Stadium ON sm.Stadium_ID = Stadium.ID
 GO
 
 CREATE VIEW allFans
@@ -322,7 +356,7 @@ Go
 
 CREATE VIEW allMatches
 AS
-SELECT Club1.Name as 'First Competing Club' , Club2.Name as 'Second Competing Club', Club1.Name as 'Host Club', startTime, endTime
+SELECT Club1.Name as 'First Competing Club' , Club2.Name as 'Second Competing Club', Club1.Name as 'Host Club', startTime
 FROM Match
 INNER JOIN Club Club1 ON Club1.ID = Match.Host_ID 
 INNER JOIN Club Club2 ON Club2.ID = Match.guest_ID 
@@ -330,7 +364,7 @@ GO
 
 CREATE VIEW allTickets
 AS 
-SELECT [First Competing Club], [Second Competing Club], Stadium.Name as 'Stadium Name', allMatches.startTime, allMatches.endTime
+SELECT [First Competing Club], [Second Competing Club], Stadium.Name as 'Stadium Name', allMatches.startTime
 FROM allMatches, Match
 INNER JOIN Stadium ON Match.stadium_ID = Stadium.ID
 GO
@@ -343,13 +377,13 @@ Go
 
 CREATE VIEW allStadiums
 AS
-SELECT Name, Location, Status
+SELECT Name, Location, Capacity, Status
 FROM Stadium
 GO
 
 CREATE VIEW allRequests
 AS
-SELECT Status, stadiumManager.Name as 'Stadium Manager Name' , clubRepresentative.Name as 'Club Representative Name'
+SELECT clubRepresentative.Name as 'Club Representative Name', stadiumManager.Name as 'Stadium Manager Name' , Status
 FROM hostRequest
 INNER JOIN stadiumManager ON stadiumManager.ID = hostRequest.SM_ID
 INNER JOIN clubRepresentative ON clubRepresentative.ID = hostRequest.CR_ID
@@ -366,24 +400,118 @@ go
 create procedure addNewMatch
 @club1 varchar(20), @club2 varchar(20), @host varchar(20), @time datetime
 as
-declare @id1 int, @id2 int;
+declare @hostID int;
+declare @guestID int;
 
-select @id1 = c.ID
+select @hostID = c.ID
 from Club c
-where c.Name = @host;
+where (c.name = @club1 and @club1 = @host) or (c.name = @club2 and @club2 = @host);
 
-select @id2 = c.ID
+select @guestID = c.ID
 from Club c
 where (c.name = @club1 and @club2 = @host) or (c.name = @club2 and @club1 = @host);
 
 insert into Match(startTime, Host_ID, guest_ID)
-values(@time, @id1, @id2);
+values(@time, @hostID, @guestID);
 
 
+--exec addNewMatch 'Madrid', 'Barcelona', 'Madrid', '2002-11-25 06:00'
 
 
+--insert into Match (guest_ID, Host_ID, startTime) values (1,2,'2020-12-13 06:00');
+--insert into Club values ('Madrid', 'Spain');
+--insert into Club values ('Barcelona', 'Spain');
+--select * from Match;
+
+go
+create view clubsWithNoMatches as
+select c.Name
+from Club c left outer join Match m on m.Host_ID = c.ID
+where m.Host_ID is null
+go
+
+create procedure deleteMatch 
+@club1 varchar(20), @club2 varchar(20), @host varchar(20)
+as
+declare @hostID int;
+declare @guestID int;
+
+select @hostID = c.ID
+from Match m inner join Club c on c.ID = m.Host_ID
+where (c.Name = @host and @club1 = @host) or (c.Name = @host and @club2 = @host);
+
+select @guestID = c.ID
+from Match m inner join Club c on c.ID = m.guest_ID
+where (c.Name = @club2 and @club1 = @host) or (c.Name = @club1 and @club2 = @host);
+
+delete from Match 
+where Match.Host_ID = @hostID and Match.guest_ID = @guestID;
+
+go
+
+create procedure deleteMatchesOnStadium @name varchar(20)
+as
+
+declare @sID int;
+
+select @sID = s.ID
+from Stadium s
+where s.Name = @name;
 
 
+declare @currDate datetime;
+SELECT @currDate = DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
+
+
+delete 
+from Match 
+where Match.stadium_ID = @sID and Match.startTime >= @currDate;
+
+go
+
+create procedure addClub
+@name varchar(20), @location varchar(20)
+as
+
+insert into Club values(@name, @location);
+go
+
+create procedure addTicket
+@host varchar(20), @guest varchar(20), @time datetime
+as
+declare @hostID int, @guestID int, @matchID int;
+
+select @hostID = c.ID
+from Club c
+where c.Name = @host;
+
+select @guestID = c.ID
+from Club c
+where c.Name = @guest;
+
+select @matchID = m.ID
+from Match m
+where m.Host_ID = @hostID and m.guest_ID = @guestID and m.startTime = @time;
+
+insert into Ticket(Match_ID) values(@matchID);
+go
+
+create procedure deleteClub @name varchar(20)
+as
+delete from Club where @name = Club.Name;
+go
+
+create procedure addStadium
+@name varchar(20), @location varchar(20), @capacity int
+as
+insert into Stadium(Name, Location, Capacity)
+values(@name, @location, @capacity);
+go
+
+create procedure deleteStadium @name varchar(20)
+as
+delete from Stadium where Stadium.Name = @name;
+go
 
 
 
@@ -393,3 +521,4 @@ SELECT *
 FROM sys.objects
 WHERE type_desc = 'USER_TABLE'
 
+select * from Match
