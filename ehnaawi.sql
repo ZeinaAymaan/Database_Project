@@ -3,416 +3,420 @@ USE ehnaawi;
 
 GO
 CREATE PROCEDURE createAllTables
-AS
-create table systemUser(
-username varchar(20) not null primary key,
-password varchar(20) not null
-);
+    AS
+    create table systemUser
+        (
+        username varchar(20) not null primary key,
+        systemUserPassword varchar(20) not null
+        );
 
-create table systemAdmin(
-ID int not null Identity primary key,
-Name varchar(20) not null,
+    create table systemAdmin
+        (
+        ID int not null Identity primary key,
+        systemAdminName varchar(20) not null,
 
-username varchar(20) not null
-constraint SA_inheretance foreign key(username) references systemUser(username)
-on delete cascade
-on update cascade,
+        systemAdminUsername varchar(20) not null
+        constraint SA_inheretance foreign key(systemAdminUsername) references systemUser(username)
+        on delete cascade
+        on update cascade,
 
-password varchar(20) not null,
-);
+        --systemAdminpassword varchar(20) not null,
+        );
 
-create table sportsAssociationManager(
-ID int not null Identity primary key,
-Name varchar(20) not null,
+    create table sportsAssociationManager
+        (
+        ID int not null Identity primary key,
+        sportsAssociationManagerName varchar(20) not null,
 
-username varchar(20) not null
-constraint SAM_inheretance foreign key(username) references systemUser(username)
-on delete cascade
-on update cascade,
+        sportsAssociationManagerUsername varchar(20) not null
+        constraint SAM_inheretance foreign key(sportsAssociationManagerUsername) references systemUser(username)
+        on delete cascade
+        on update cascade,
 
-password varchar(20) not null,
-);
+        --password varchar(20) not null,
+        );
 
-create table Stadium(
-ID int not null Identity primary key,
-Name varchar(20) not null,
-Location varchar(20) not null,
-Capacity int not null,
-Status bit default 'false'
-);
-
-
-create table stadiumManager(
-ID int not null identity primary key,
-Name varchar(20) not null,
-
-username varchar(20) not null
-constraint SM_inheretance foreign key(username) references systemUser(username)
-on delete cascade
-on update cascade,
-
-password varchar(20) not null,
-
-Stadium_ID int not null
-constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
-on update cascade
-on delete cascade
-);
+    create table Stadium
+        (
+        ID int not null Identity primary key,
+        stadiumName varchar(20) not null,
+        stadiumLocation varchar(20) not null,
+        Capacity int not null,
+        stadiumStatus bit default 'false'
+        );
 
 
-create table Club(
-ID int not null Identity primary key,
-Name varchar(20) not null,
-Location varchar(20) not null,
-);
+    create table stadiumManager
+        (
+        ID int not null identity primary key,
+        stadiumManagerName varchar(20) not null,
+
+        stadiumManagerUsername varchar(20) not null
+        constraint SM_inheretance foreign key(stadiumManagerUsername) references systemUser(username)
+        on delete cascade
+        on update cascade,
+
+        --stadiumManagerPassword varchar(20) not null,
+
+        Stadium_ID int not null
+        constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
+        on update cascade
+        on delete cascade
+        );
 
 
-create table clubRepresentative(
-ID int not null Identity primary key,
-Name varchar(20) not null,
-
-Username varchar(20) not null
-constraint CR_inheretance foreign key (Username) references systemUser(username)
-on delete cascade
-on update cascade,
-
-Password varchar(20) not null,
-
-club_ID int not null
-constraint Club_CR_fk foreign key(club_ID) 
-references Club(ID)
-on delete cascade
-on update cascade
-);
+    create table Club      
+        (
+        ID int not null Identity primary key,
+        clubName varchar(20) not null,
+        clubLocation varchar(20) not null,
+        );
 
 
-create table Fan(
-national_ID int not null primary key,
-Name varchar(20) not null,
-Address varchar(20) not null,
-phone_no varchar(20) not null,
-birth_date date not null,
-Status bit not null
-);
+    create table clubRepresentative
+        (
+        ID int not null Identity primary key,
+        clubRepresentativeName varchar(20) not null,
+
+        clubRepresentativeUsername varchar(20) not null
+        constraint CR_inheretance foreign key (clubRepresentativeUsername) references systemUser(username)
+        on delete cascade
+        on update cascade,
+
+        --clubRepresentativePassword varchar(20) not null,
+
+        club_ID int not null
+        constraint Club_CR_fk foreign key(club_ID) 
+        references Club(ID)
+        on delete cascade
+        on update cascade
+        );
 
 
-create table Match(
-ID int not null Identity primary key,
-startTime datetime not null,
-endTime datetime,
-
-stadium_ID int
-constraint Match_Stadium_fk foreign key(stadium_ID)references Stadium(ID)
-on delete cascade
-on update cascade,
-
-guest_ID int 
-constraint Club_Guest_fk foreign key(guest_ID)
-references Club(ID)
-on delete no action
-on update no action,
-
-Host_ID int 
-constraint Club_Host_fk foreign key(Host_ID)
-references Club(ID)
-on delete no action
-on update no action,
-
-check(Guest_ID <> Host_ID)
-
-);
+    create table Fan
+        (
+        fanNationalID VARCHAR(20) not null primary key,
+        fanName varchar(20) not null,
+        fanAddress varchar(20) not null,
+        fanPhoneNo varchar(20) not null,
+        fanBirthDate date not null,
+        fanUsername VARCHAR (20) NOT NULL CONSTRAINT fanInheritence FOREIGN KEY (fanUsername)
+        REFERENCES systemUser(username) ON DELETE CASCADE ON UPDATE CASCADE,
+        --fanPassword VARCHAR(20) NOT NULL,
+        Status bit not null
+        );
 
 
-create table hostRequest(
-ID int IDENTITY,
-CR_ID int not null,
-SM_ID int not null,
+    create table Match
+        (
+        ID int not null Identity primary key,
+        startTime datetime not null,
+        endTime datetime,
 
-constraint Request_pk primary key(ID),
+        stadium_ID int
+        constraint Match_Stadium_fk foreign key(stadium_ID)references Stadium(ID)
+        on delete cascade
+        on update cascade,
 
-constraint Request_CR_fk foreign key(CR_ID)
-references clubRepresentative(ID)
-on delete cascade
-on update cascade,
+        guest_ID int 
+        constraint Club_Guest_fk foreign key(guest_ID)
+        references Club(ID)
+        on delete no action
+        on update no action,
 
-constraint Request_SM_fk foreign key(SM_ID)
-references stadiumManager(ID)
-on delete no action
-on update no action,
+        Host_ID int 
+        constraint Club_Host_fk foreign key(Host_ID)
+        references Club(ID)
+        on delete no action
+        on update no action,
 
-Match_ID int not null
-constraint Request_Match_fk foreign key(Match_ID)
-references Match(ID)
-on delete cascade
-on update cascade,
+        check(Guest_ID <> Host_ID)
 
-Status varchar(20) not null default 'unhandled'
-);
+        );
 
 
-create table Ticket(
-ID int not null Identity primary key,
-Status bit default 'false',
+    create table hostRequest
+        (
+        ID int IDENTITY,
+        CR_ID int not null,
+        SM_ID int not null,
 
-Match_ID int not null
-constraint Tickets_Match_fk foreign key(Match_ID)
-references Match(ID)
-on delete cascade
-on update cascade,
-);
+        constraint Request_pk primary key(ID),
 
-CREATE TABLE ticketBuyingTransaction(
-fanNationalID INT,
-ticketID INT,
-CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(national_ID),
-CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID),
-CONSTRAINT buy_pk PRIMARY KEY(fanNationalID,ticketID)
-);
+        constraint Request_CR_fk foreign key(CR_ID)
+        references clubRepresentative(ID)
+        on delete cascade
+        on update cascade,
 
-go
+        constraint Request_SM_fk foreign key(SM_ID)
+        references stadiumManager(ID)
+        on delete no action
+        on update no action,
+
+        Match_ID int not null
+        constraint Request_Match_fk foreign key(Match_ID)
+        references Match(ID)
+        on delete cascade
+        on update cascade,
+
+        Status varchar(20) not null default 'unhandled'
+        );
+
+
+    create table Ticket
+        (
+        ID int not null Identity primary key,
+        ticketStatus bit default 'false',
+
+        Match_ID int not null
+        constraint Tickets_Match_fk foreign key(Match_ID)
+        references Match(ID)
+        on delete cascade
+        on update cascade,
+        );
+
+    CREATE TABLE ticketBuyingTransaction
+        (
+        fanNationalID Varchar(20),
+        ticketID INT,
+        CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(fanNationalID),
+        CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID),
+        CONSTRAINT buy_pk PRIMARY KEY(fanNationalID,ticketID)
+        );
+
+    go
 
 EXEC createAllTables
 
 GO
 CREATE PROCEDURE dropAllTables
-AS
-
-        DROP TABLE ticketBuyingTransaction;
-        DROP TABLE Ticket;
-        DROP TABLE hostRequest;
-        DROP TABLE Match; 
-        DROP TABLE Fan;
-        DROP TABLE clubRepresentative;
-        DROP TABLE Club;
-        DROP TABLE stadiumManager;
-        DROP TABLE Stadium;
-        DROP TABLE sportsAssociationManager;         
-        DROP TABLE systemAdmin;
-        DROP TABLE systemUser;
+    AS 
+    DROP TABLE ticketBuyingTransaction;
+    DROP TABLE Ticket;
+    DROP TABLE hostRequest;
+    DROP TABLE Match; 
+    DROP TABLE Fan;
+    DROP TABLE clubRepresentative;
+    DROP TABLE Club;
+    DROP TABLE stadiumManager;
+    DROP TABLE Stadium;
+    DROP TABLE sportsAssociationManager;         
+    DROP TABLE systemAdmin;
+    DROP TABLE systemUser;
          
-exec dropAllTables;
-Go
+EXEC dropAllTables;
 
 
 GO
 CREATE PROCEDURE clearAllTables
-AS
---lazem nsheel kol el foreign key constraints abl ma n-truncate el table
-ALTER TABLE ticketBuyingTransaction
-DROP CONSTRAINT buyFanID,buyTicketID 
-TRUNCATE TABLE ticketBuyingTransaction
+    AS
+    --lazem nsheel kol el foreign key constraints abl ma n-truncate el table
+    ALTER TABLE ticketBuyingTransaction
+    DROP CONSTRAINT buyFanID,buyTicketID 
+    TRUNCATE TABLE ticketBuyingTransaction
 
-ALTER TABLE Ticket
-DROP CONSTRAINT Tickets_Match_fk
-TRUNCATE TABLE Ticket
+    ALTER TABLE Ticket
+    DROP CONSTRAINT Tickets_Match_fk
+    TRUNCATE TABLE Ticket
 
-ALTER TABLE hostRequest
-DROP CONSTRAINT Request_CR_fk, Request_SM_fk, Request_Match_fk
-TRUNCATE TABLE hostRequest
+    ALTER TABLE hostRequest
+    DROP CONSTRAINT Request_CR_fk, Request_SM_fk, Request_Match_fk
+    TRUNCATE TABLE hostRequest
 
-ALTER TABLE Match
-DROP CONSTRAINT Match_Stadium_fk,Club_Guest_fk,Club_Host_fk
-TRUNCATE TABLE Match
+    ALTER TABLE Match
+    DROP CONSTRAINT Match_Stadium_fk,Club_Guest_fk,Club_Host_fk
+    TRUNCATE TABLE Match
 
-TRUNCATE TABLE Fan
+    ALTER TABLE Fan
+    DROP CONSTRAINT fanInheritence
+    TRUNCATE TABLE Fan
 
-ALTER TABLE clubRepresentative
-DROP CONSTRAINT CR_inheretance,Club_CR_fk
-TRUNCATE TABLE clubRepresentative
+    ALTER TABLE clubRepresentative
+    DROP CONSTRAINT CR_inheretance,Club_CR_fk
+    TRUNCATE TABLE clubRepresentative
 
-TRUNCATE TABLE Club
+    TRUNCATE TABLE Club
 
-ALTER TABLE stadiumManager
-DROP CONSTRAINT SM_inheretance, stadium_SM_fk
-TRUNCATE TABLE stadiumManager
+    ALTER TABLE stadiumManager
+    DROP CONSTRAINT SM_inheretance, stadium_SM_fk
+    TRUNCATE TABLE stadiumManager
 
-TRUNCATE TABLE Stadium
+    TRUNCATE TABLE Stadium
 
-ALTER TABLE sportsAssociationManager
-DROP CONSTRAINT SAM_inheretance
-TRUNCATE TABLE sportsAssociationManager
+    ALTER TABLE sportsAssociationManager
+    DROP CONSTRAINT SAM_inheretance
+    TRUNCATE TABLE sportsAssociationManager
 
-ALTER TABLE systemAdmin
-DROP CONSTRAINT SA_inheretance
-TRUNCATE TABLE systemAdmin
+    ALTER TABLE systemAdmin
+    DROP CONSTRAINT SA_inheretance
+    TRUNCATE TABLE systemAdmin
 
-TRUNCATE TABLE systemUser
---hena baraga3 el constraints 3shan manbawazsh el donya
-ALTER TABLE ticketBuyingTransaction ADD
-CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(national_ID),
-CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID)
+    TRUNCATE TABLE systemUser
 
-ALTER TABLE Ticket ADD
-CONSTRAINT Tickets_Match_fk foreign key(Match_ID) references Match(ID)
-on delete cascade
-on update cascade
+    --hena baraga3 el constraints 3shan manbawazsh el donya
+    ALTER TABLE ticketBuyingTransaction ADD
+    CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(national_ID),
+    CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID)
 
-ALTER TABLE hostRequest ADD
-CONSTRAINT Request_CR_fk foreign key(CR_ID) references clubRepresentative(ID)
-on delete cascade
-on update cascade,
-constraint Request_SM_fk foreign key(SM_ID)references stadiumManager(ID)
-on delete no action
-on update no action,
-constraint Request_Match_fk foreign key(Match_ID) references Match(ID)
-on delete cascade
-on update cascade
+    ALTER TABLE Ticket ADD
+    CONSTRAINT Tickets_Match_fk foreign key(Match_ID) references Match(ID)
+    on delete cascade
+    on update cascade
+
+    ALTER TABLE hostRequest ADD
+    CONSTRAINT Request_CR_fk foreign key(CR_ID) references clubRepresentative(ID)
+    on delete cascade
+    on update cascade,
+    constraint Request_SM_fk foreign key(SM_ID)references stadiumManager(ID)
+    on delete no action
+    on update no action,
+    constraint Request_Match_fk foreign key(Match_ID) references Match(ID)
+    on delete cascade
+    on update cascade
  
-ALTER TABLE Match ADD
-CONSTRAINT  Match_Stadium_fk foreign key(stadium_ID) references Stadium(ID)
-on delete cascade
-on update cascade,
-constraint Club_Guest_fk foreign key(guest_ID) references Club(ID)
-on delete no action
-on update no action,
-constraint Club_Host_fk foreign key(Host_ID) references Club(ID)
-on delete no action
-on update no action
+    ALTER TABLE Match ADD
+    CONSTRAINT  Match_Stadium_fk foreign key(stadium_ID) references Stadium(ID)
+    on delete cascade
+    on update cascade,
+    constraint Club_Guest_fk foreign key(guest_ID) references Club(ID)
+    on delete no action
+    on update no action,
+    constraint Club_Host_fk foreign key(Host_ID) references Club(ID)
+    on delete no action
+    on update no action
 
-ALTER TABLE clubRepresentative ADD 
-CONSTRAINT CR_inheretance foreign key (Username) references systemUser(username)
-on delete cascade
-on update cascade,
-constraint Club_CR_fk foreign key(club_ID) references Club(ID)
-on delete cascade
-on update cascade
+    ALTER TABLE Fan ADD
+    CONSTRAINT fanInheritence FOREIGN KEY (fanUsername)
+    REFERENCES systemUser(username) ON DELETE CASCADE ON UPDATE CASCADE
 
-ALTER TABLE stadiumManager ADD
-constraint SM_inheretance foreign key(username) references systemUser(username)
-on delete cascade
-on update cascade,
-constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
-on update cascade
-on delete cascade
+    ALTER TABLE clubRepresentative ADD 
+    CONSTRAINT CR_inheretance foreign key (Username) references systemUser(username)
+    on delete cascade
+    on update cascade,
+    constraint Club_CR_fk foreign key(club_ID) references Club(ID)
+    on delete cascade
+    on update cascade
 
-ALTER TABLE sportsAssociationManager ADD
-constraint SAM_inheretance foreign key(username) references systemUser(username)
-on delete cascade
-on update cascade
+    ALTER TABLE stadiumManager ADD
+    constraint SM_inheretance foreign key(username) references systemUser(username)
+    on delete cascade
+    on update cascade,
+    constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
+    on update cascade
+    on delete cascade
 
-ALTER TABLE systemAdmin ADD
-constraint SA_inheretance foreign key(username) references systemUser(username)
-on delete cascade
-on update cascade
+    ALTER TABLE sportsAssociationManager ADD
+    constraint SAM_inheretance foreign key(username) references systemUser(username)
+    on delete cascade
+    on update cascade
 
-go
+    ALTER TABLE systemAdmin ADD
+    constraint SA_inheretance foreign key(username) references systemUser(username)
+    on delete cascade
+    on update cascade
+
+    go
 
 EXEC clearAllTables
 
-go
-create procedure dropAllProceduresFunctionsViews As
-
-drop procedure createAllTables;
-drop procedure dropAllTables;
-drop procedure clearAllTables;
-drop procedure addAssociationManager;
-drop procedure addNewMatch;
-drop procedure deleteMatch;
-drop procedure deleteMatchesOnStadium;
-drop procedure addClub;
-drop procedure addTicket;
-drop procedure deleteClub;
-drop procedure addStadium;
-drop procedure deleteStadium;
-
-drop view allAssocManagers;
-drop view allClubRepresentatives;
-drop view allCLubs;
-drop view allFans;
-drop view allMatches;
-drop view allRequests;
-drop view allStadiumManagers;
-drop view allStadiums;
-drop view allTickets;
-drop view clubsWithNoMatches;
-
-
 GO
-CREATE VIEW allAssocManagers AS
-SELECT username,Name FROM sportsAssociationManager
-GO
+CREATE VIEW allAssocManagers 
+    AS
+    SELECT sportsAssociationManagerUsername 'Username',
+    sportsAssociationManagerName 'Name'FROM sportsAssociationManager
+    GO
 
 
 GO
 CREATE VIEW allClubRepresentatives
-AS
-SELECT cr.username,cr.Name,Club.Name as 'Club Represented'
-FROM clubRepresentative cr
-INNER JOIN Club ON cr.club_ID = Club.ID
-GO
+    AS
+    SELECT cr.clubRepresentativeUsername 'Username',
+    cr.clubRepresentativeName 'Name',Club.clubName as 'Club Represented'
+    FROM clubRepresentative cr
+    INNER JOIN Club ON cr.club_ID = Club.ID
 
+GO
 CREATE VIEW allStadiumManagers
-AS
-SELECT sm.username, sm.Name, Stadium.Name as 'Stadium Managed'
-FROM stadiumManager sm
-INNER JOIN Stadium ON sm.Stadium_ID = Stadium.ID
+    AS
+    SELECT sm.stadiumManagerUsername 'Username',s.[systemUserPassword] 'Password',
+    sm.stadiumManagerName 'Name', Stadium.stadiumName as 'Stadium Managed'
+    FROM stadiumManager sm
+    INNER JOIN Stadium ON sm.Stadium_ID = Stadium.ID
+    INNER JOIN systemUser s ON sm.stadiumManagerUsername=s.username
+
 GO
-
 CREATE VIEW allFans
-AS 
-SELECT Name, national_ID, birth_date, Status
-FROM Fan
-Go
+    AS 
+    SELECT F.fanUsername 'Username',S.[systemUserPassword] 'Password',
+    F.fanName 'Name', F.fanNationalID 'National ID', F.fanBirthDate 'Birth Date', F.Status
+    FROM Fan F INNER JOIN systemUser S ON S.username=F.fanUsername
 
+Go
 CREATE VIEW allMatches
-AS
-SELECT Club1.Name as 'First Competing Club' , Club2.Name as 'Second Competing Club', Club1.Name as 'Host Club', startTime
-FROM Match
-INNER JOIN Club Club1 ON Club1.ID = Match.Host_ID 
-INNER JOIN Club Club2 ON Club2.ID = Match.guest_ID 
+    AS
+    SELECT Club1.clubName as 'First Competing Club' , Club2.clubName as 'Second Competing Club',
+    startTime 'Start Time'
+    FROM Match
+    INNER JOIN Club Club1 ON Club1.ID = Match.Host_ID 
+    INNER JOIN Club Club2 ON Club2.ID = Match.guest_ID 
 GO
 
 CREATE VIEW allTickets
-AS 
-SELECT [First Competing Club], [Second Competing Club], Stadium.Name as 'Stadium Name', allMatches.startTime
-FROM allMatches, Match
-INNER JOIN Stadium ON Match.stadium_ID = Stadium.ID
+    AS 
+    SELECT [First Competing Club] 'Host Club',
+    [Second Competing Club] 'Guest Club', Stadium.stadiumName as 'Stadium Name', [Start Time]
+    FROM allMatches, Match
+    INNER JOIN Stadium ON Match.stadium_ID = Stadium.ID
 GO
 
 CREATE VIEW allCLubs
-AS
-SELECT Name, Location
-FROM Club
+    AS
+    SELECT clubName 'Name', clubLocation 'Location'
+    FROM Club
 Go
 
 CREATE VIEW allStadiums
-AS
-SELECT Name, Location, Capacity, Status
-FROM Stadium
+    AS
+    SELECT stadiumName 'Name', stadiumLocation 'Location', Capacity 'Capacity', stadiumStatus 'Status'
+    FROM Stadium
 GO
 
 CREATE VIEW allRequests
-AS
-SELECT clubRepresentative.Name as 'Club Representative Name', stadiumManager.Name as 'Stadium Manager Name' , Status
-FROM hostRequest
-INNER JOIN stadiumManager ON stadiumManager.ID = hostRequest.SM_ID
-INNER JOIN clubRepresentative ON clubRepresentative.ID = hostRequest.CR_ID
+    AS
+    SELECT cR.clubRepresentativeUsername 'Club Representative Username',
+    stadiumManager.stadiumManagerUsername as 'Stadium Manager Username' , Status
+    FROM hostRequest
+    INNER JOIN stadiumManager ON stadiumManager.ID = hostRequest.SM_ID
+    INNER JOIN clubRepresentative cR ON cR.ID = hostRequest.CR_ID
 GO
 
-create procedure addAssociationManager 
-@name varchar(20), @username varchar(20), @password varchar(20)
-as
-insert into sportsAssociationManager
-values (@name, @username, @password);
+--END of 2.2
 
-go
+create procedure addAssociationManager 
+    @name varchar(20), @username varchar(20), @password varchar(20)
+    as
+    INSERT INTO systemUser VALUES(@username,@password)
+    insert into sportsAssociationManager(sportsAssociationManagerName,sportsAssociationManagerUsername)
+    values (@name, @username);
+
+    go
 
 create procedure addNewMatch
-@club1 varchar(20), @club2 varchar(20), @host varchar(20), @time datetime
+@club1 varchar(20), @club2 varchar(20),@time datetime, @endtime DATETIME 
 as
 declare @hostID int;
 declare @guestID int;
 
 select @hostID = c.ID
 from Club c
-where (c.name = @club1 and @club1 = @host) or (c.name = @club2 and @club2 = @host);
+where (c.clubName = @club1);
 
-select @guestID = c.ID
-from Club c
-where (c.name = @club1 and @club2 = @host) or (c.name = @club2 and @club1 = @host);
+select @guestID = c2.ID
+from Club c2
+where (c2.clubName = @club2);
 
-insert into Match(startTime, Host_ID, guest_ID)
-values(@time, @hostID, @guestID);
+insert into Match(startTime, endTime, Host_ID, guest_ID)
+values(@time, @endtime, @hostID, @guestID);
 
 
 --exec addNewMatch 'Madrid', 'Barcelona', 'Madrid', '2002-11-25 06:00'
@@ -424,101 +428,201 @@ values(@time, @hostID, @guestID);
 --select * from Match;
 
 go
-create view clubsWithNoMatches as
-select c.Name
-from Club c left outer join Match m on m.Host_ID = c.ID
-where m.Host_ID is null
-go
+CREATE VIEW clubsWithNoMatches as
+    select c.clubName
+    from Club c left outer join Match m on m.Host_ID = c.ID
+    where m.Host_ID is null and EXISTS ( SELECT c1.clubName
+    from Club c1 left outer join Match m1 on m1.guest_ID = c1.ID
+    where m1.guest_ID is null)
+    go
 
-create procedure deleteMatch 
-@club1 varchar(20), @club2 varchar(20), @host varchar(20)
-as
-declare @hostID int;
-declare @guestID int;
+CREATE PROCEDURE deleteMatch 
+    @club1 varchar(20), @club2 varchar(20)
+    as
+    declare @hostID int;
+    declare @guestID int;
 
-select @hostID = c.ID
-from Match m inner join Club c on c.ID = m.Host_ID
-where (c.Name = @host and @club1 = @host) or (c.Name = @host and @club2 = @host);
+    select @hostID = c.ID
+    from Match m inner join Club c on c.ID = m.Host_ID
+    where (c.clubName = @club1 );
 
-select @guestID = c.ID
-from Match m inner join Club c on c.ID = m.guest_ID
-where (c.Name = @club2 and @club1 = @host) or (c.Name = @club1 and @club2 = @host);
+    select @guestID = c.ID
+    from Match m inner join Club c on c.ID = m.guest_ID
+    where (c.clubName = @club2);
 
-delete from Match 
-where Match.Host_ID = @hostID and Match.guest_ID = @guestID;
+    delete from Match 
+    where Match.Host_ID = @hostID and Match.guest_ID = @guestID;
 
-go
+    go
 
-create procedure deleteMatchesOnStadium @name varchar(20)
-as
+CREATE PROCEDURE deleteMatchesOnStadium 
+    @name varchar(20)
+    as
 
-declare @sID int;
+    declare @sID int;
 
-select @sID = s.ID
-from Stadium s
-where s.Name = @name;
-
-
-declare @currDate datetime;
-SELECT @currDate = DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
-
-
-delete 
-from Match 
-where Match.stadium_ID = @sID and Match.startTime >= @currDate;
-
-go
-
-create procedure addClub
-@name varchar(20), @location varchar(20)
-as
-
-insert into Club values(@name, @location);
-go
-
-create procedure addTicket
-@host varchar(20), @guest varchar(20), @time datetime
-as
-declare @hostID int, @guestID int, @matchID int;
-
-select @hostID = c.ID
-from Club c
-where c.Name = @host;
-
-select @guestID = c.ID
-from Club c
-where c.Name = @guest;
-
-select @matchID = m.ID
-from Match m
-where m.Host_ID = @hostID and m.guest_ID = @guestID and m.startTime = @time;
-
-insert into Ticket(Match_ID) values(@matchID);
-go
-
-create procedure deleteClub @name varchar(20)
-as
-delete from Club where @name = Club.Name;
-go
-
-create procedure addStadium
-@name varchar(20), @location varchar(20), @capacity int
-as
-insert into Stadium(Name, Location, Capacity)
-values(@name, @location, @capacity);
-go
-
-create procedure deleteStadium @name varchar(20)
-as
-delete from Stadium where Stadium.Name = @name;
-go
+    select @sID = s.ID
+    from Stadium s
+    where s.stadiumName = @name;
 
 
+    --declare @currDate datetime;
+    --SELECT @currDate = DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
 
 
+    delete 
+    from Match 
+    where Match.stadium_ID = @sID and Match.startTime >= CURRENT_TIMESTAMP;
 
-SELECT *
-FROM sys.objects
-WHERE type_desc = 'USER_TABLE'
+    go
 
-select * from Match
+CREATE PROCEDURE addClub
+    @name varchar(20), @location varchar(20)
+    as
+
+    insert into Club values(@name, @location);
+    go
+
+CREATE PROCEDURE addTicket
+    @host varchar(20), @guest varchar(20), @time datetime
+    as
+    declare @hostID int, @guestID int, @matchID int;
+
+    select @hostID = c.ID
+    from Club c
+    where c.clubName = @host;
+
+    select @guestID = c1.ID
+    from Club c1
+    where c1.clubName = @guest;
+
+    select @matchID = m.ID
+    from Match m
+    where m.Host_ID = @hostID and m.guest_ID = @guestID and m.startTime = @time;
+
+    insert into Ticket(Match_ID) values(@matchID);
+    go
+
+CREATE PROCEDURE deleteClub
+     @name varchar(20)
+    as
+    delete from Club where @name = Club.clubName;
+    go
+
+CREATE PROCEDURE addStadium
+    @name varchar(20), @location varchar(20), @capacity int
+    as
+    insert into Stadium(stadiumName, stadiumLocation, Capacity)
+    values(@name, @location, @capacity);
+    go
+
+create procedure deleteStadium 
+    @name varchar(20)
+    as
+    delete from Stadium where Stadium.stadiumName = @name;
+    go
+
+CREATE PROCEDURE blockFan 
+    @nationalID VARCHAR(20)
+    AS
+    UPDATE Fan SET Status ='0' WHERE fanNationalID= @nationalID;
+    GO
+CREATE PROCEDURE unblockFan 
+    @nationalID VARCHAR(20)
+    AS
+    UPDATE Fan SET Status ='1' WHERE fanNationalID= @nationalID;    
+    GO
+
+CREATE PROCEDURE addRepresentative 
+    @name varchar(20), @club_name varchar(20), @username varchar(20), @password varchar(20)
+    as
+    declare @club_ID int
+    set @club_ID = (SELECT ID from Club where @club_name = Club.clubName)
+    INSERT INTO systemUser VALUES(@username,@password)
+    insert into clubRepresentative(clubRepresentativeName,club_ID,clubRepresentativeUsername) 
+    values(@name, @club_ID,@username)
+    go
+CREATE FUNCTION viewAvailableStadiumsOn
+    (@rtime DATETIME)
+    RETURNS @S TABLE (sname VARCHAR(20) , sloc VARCHAR(20), cap INT)
+    AS BEGIN
+    INSERT INTO @S
+    SELECT stadiumName, stadiumLocation, Capacity 
+    FROM Stadium LEFT OUTER JOIN [Match] ON [Match].stadium_ID=Stadium.ID
+    WHERE Stadium.[stadiumStatus]='1' AND [Match].ID NOT IN (SELECT ID FROM [Match] WHERE startTime=@rtime)
+    RETURN;
+    END
+    GO
+CREATE PROCEDURE addHostRequest 
+    @cName VARCHAR(20), @Sname VARCHAR(20), @sTime DATETIME
+    AS
+    DECLARE @cr INT, @sm INT
+    SELECT @cr=clubRepresentative.ID
+    FROM clubRepresentative INNER JOIN Club ON clubRepresentative.club_ID=Club.ID 
+    INNER JOIN [Match] ON [Match].Host_ID=Club.ID
+    WHERE clubName=@cName AND startTime=@sTime
+
+    SELECT @sm=stadiumManager.ID
+    FROM stadiumManager INNER JOIN Stadium ON stadiumManager.Stadium_ID = Stadium.ID 
+    WHERE stadiumName=@Sname
+
+    INSERT INTO hostRequest(CR_ID, SM_ID) VALUES (@cr, @sm)
+    GO
+CREATE FUNCTION allUnassignedMatches
+    (@cName VARCHAR(20))
+    RETURNS @M TABLE(guestClubName VARCHAR(20), startTime DATETIME)
+    AS BEGIN
+    INSERT INTO @M
+    SELECT C2.clubName, startTime
+    FROM Club C1 INNER JOIN [Match] ON C1.ID=[Match].Host_ID
+    INNER JOIN Club C2 ON C2.ID=[Match].guest_ID
+    WHERE C1.clubName= @cName AND stadium_ID IS NULL
+    RETURN;
+    END
+    GO
+
+create procedure dropAllProceduresFunctionsViews
+    As
+    drop procedure createAllTables;
+    drop procedure dropAllTables;
+    drop procedure clearAllTables;
+    drop procedure addAssociationManager;
+    drop procedure addNewMatch;
+    drop procedure deleteMatch;
+    drop procedure deleteMatchesOnStadium;
+    drop procedure addClub;
+    drop procedure addTicket;
+    drop procedure deleteClub;
+    drop procedure addStadium;
+    drop procedure deleteStadium;
+    DROP PROCEDURE blockFan;
+    DROP PROCEDURE unblockFan;
+    DROP PROCEDURE addRepresentative;
+    DROP PROCEDURE addHostRequest;
+
+    drop view allAssocManagers;
+    drop view allClubRepresentatives;
+    drop view allCLubs;
+    drop view allFans;
+    drop view allMatches;
+    drop view allRequests;
+    drop view allStadiumManagers;
+    drop view allStadiums;
+    drop view allTickets;
+    drop view clubsWithNoMatches;
+
+    DROP FUNCTION viewAvailableStadiumsOn;
+    DROP FUNCTION allUnassignedMatches;
+
+    GO
+
+
+-- Drop the database 'DatabaseName'
+-- Connect to the 'master' database to run this snippet
+USE master
+GO
+-- Uncomment the ALTER DATABASE statement below to set the database to SINGLE_USER mode if the drop database command fails because the database is in use.
+ALTER DATABASE ehnaawi SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+-- Drop the database if it exists
+DROP DATABASE ehnaawi
+GO 
