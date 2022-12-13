@@ -627,10 +627,10 @@ ALTER DATABASE ehnaawi SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 DROP DATABASE ehnaawi
 GO 
 
-create procedure addStadiumManager @name varchar(20), @stadium_name varcar(20), @username varchar(20), @password varchar(20)
+create procedure addStadiumManager @name varchar(20), @stadium_name varchar(20), @username varchar(20), @password varchar(20)
 as declare @stadium_ID int
-    set @stadium_ID = (SELECT ID from Stadium where @stadium_name = Stadium.name)
+    set @stadium_ID = (SELECT ID from Stadium where @stadium_name = Stadium.Name)
     INSERT INTO systemUser VALUES(@username,@password)
-    insert into StadiumManager(stadiumManagerName,club_ID,clubRepresentativeUsername) 
+    insert into StadiumManager(stadiumManagerName,Stadium_ID,stadiumManagerUsername) 
     values(@name, @stadium_ID,@username)
     go
