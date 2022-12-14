@@ -680,23 +680,37 @@ end
 go
 
 
-create function availableMatchesToAttend(@starttime datetime)
-returns @T table(c1name varchar(20), c2name varchar(20), starttime datetime, stadiumname varchar(20))
-as begin
-insert into @T
-select c1.clubName, c2.clubName, m.startTime, Stadium.stadiumName from Match m inner join Club c1 on c1.ID = m.host_ID 
-inner join Club c2 on c2.ID = m.guest_ID
-inner join Stadium on Stadium.ID = m.stadium_ID inner join Ticket on m.ID = Ticket.Match_ID where m.startTime> @starttime 
-AND Ticket.ID = any(select ID from Ticket where Match_ID = m.ID AND ticketStatus = '1')
-return
-end 
-go
+create function availableMatchesToAttend
+    (@starttime datetime)
+    returns @T table(c1name varchar(20), c2name varchar(20), starttime datetime, stadiumname varchar(20))
+    as begin
+    insert into @T
+    select c1.clubName, c2.clubName, m.startTime, Stadium.stadiumName from Match m inner join Club c1 on c1.ID = m.host_ID 
+    inner join Club c2 on c2.ID = m.guest_ID
+    inner join Stadium on Stadium.ID = m.stadium_ID inner join Ticket on m.ID = Ticket.Match_ID where m.startTime> @starttime 
+    AND Ticket.ID = any(select ID from Ticket where Match_ID = m.ID AND ticketStatus = '1')
+    return
+    end 
+    go
 
-create procedure purchaseTicket @nationalid varchar(20), @hostname varchar(20), @guestname varchar(20), @starttime datetime
-as insert into ticketBuyingTransaction values(t.ID, @nationalid) where t.ID = in(
-select top 1 t.ID from Ticket t inner join Match m on t.Match_ID = m.ID inner join Club c1 on c1.ID = m.host_ID 
-inner join Club c2 on c2.ID = m.guest_ID where m.startTime = @starttime 
-AND c1.clubName= @hostname AND c2.clubName = @guestname AND t.ticketStatus = '1')
+create procedure purchaseTicket 
+    @nationalid varchar(20), @hostname varchar(20), @guestname varchar(20), @starttime datetime
+    as
+    DECLARE @tID INT
+    insert into ticketBuyingTransaction 
+    values(
+    (select top 1 t.ID from Ticket t inner join Match m on t.Match_ID = m.ID inner join Club c1 on c1.ID = m.host_ID 
+    inner join Club c2 on c2.ID = m.guest_ID where m.startTime = @starttime 
+    AND c1.clubName= @hostname AND c2.clubName = @guestname AND t.ticketStatus = '1'),
+    (SELECT fanNationalID as nID FROM Fan WHERE fanNationalID=@nationalid AND Status='1'))
+    SET @tID=(select top 1 t.ID from Ticket t inner join Match m on t.Match_ID = m.ID inner join Club c1 on c1.ID = m.host_ID 
+    inner join Club c2 on c2.ID = m.guest_ID where m.startTime = @starttime 
+    AND c1.clubName= @hostname AND c2.clubName = @guestname AND t.ticketStatus = '1')
+    UPDATE Ticket SET ticketStatus='0' WHERE Ticket.ID=@tID
+    GO
+CREATE PROCEDURE updateMatchHost 
+    @hName VARCHAR(20), @gName VARCHAR(20), @sTime DATETIME
+    AS
 
 
 
