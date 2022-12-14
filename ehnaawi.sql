@@ -634,3 +634,75 @@ as declare @stadium_ID int
     insert into StadiumManager(stadiumManagerName,Stadium_ID,stadiumManagerUsername) 
     values(@name, @stadium_ID,@username)
     go
+
+
+
+create function allPendingRequests (@username varchar(20))
+returns @R table (rname varchar(20), gcname varchar(20), starttime datetime)
+as begin
+insert into @R
+select clubRepresentativeName, Club.clubName, Match.startTime
+from hostRequest hr inner join clubRepresentative cr on hr.CR_ID = cr.id inner join stadiumManager sm on hr.SM_ID = sm.ID
+inner join Match on hr.Match_ID = Match.ID inner join Club on Match.guest_id = Club.ID 
+where StadiumManagerUsername = @username AND Status = 'unhandled'
+RETURN
+END
+GO
+
+create procedure acceptRequest @username varchar(20), @hostclubname varchar(20), @guestclubname varchar(20), @starttime datetime
+as update hostRequest set Status = 'accepted' where Status in (select Status from hostRequest hr inner join Match on hr.Match_ID = Match.ID 
+inner Join Club c1 on c1.ID = Match.host_ID inner join Club c2 on c2.ID = Match.guest_ID inner join stadiumManager sm on hr.SM_ID = sm.ID
+where @username = sm.stadiumManagerUsername AND @hostclubname = c1.clubName AND @guestclubname = c2.clubName AND @starttime = Match.startTime)
+go
+
+create procedure rejectRequest @username varchar(20), @hostclubname varchar(20), @guestclubname varchar(20), @starttime datetime
+as update hostRequest set Status = 'rejected' where Status in (select Status from hostRequest hr inner join Match on hr.Match_ID = Match.ID 
+inner Join Club c1 on c1.ID = Match.host_ID inner join Club c2 on c2.ID = Match.guest_ID inner join stadiumManager sm on hr.SM_ID = sm.ID
+where @username = sm.stadiumManagerUsername AND @hostclubname = c1.clubName AND @guestclubname = c2.clubName AND @starttime = Match.startTime)
+go
+
+create procedure addFan @name varchar(20), @username varchar(20), 
+@password varchar(20), @nationalid varchar(20), @birthdate varchar(20), @address varchar(20), @phonenum int
+as insert into systemUser values(@username, @password)
+insert into Fan(fanName, fanUsername, fanNationalID, fanBirthDate, fanAddress, fanPhoneNo)
+values(@name, @username, @nationalid, @birthdate, @address, @phonenum)
+go
+
+create function upcomingMatchesOfClub (@clubname varchar(20))
+returns @M table( c1name varchar(20), c2name varchar(20), starttime datetime, stadiumname varchar(20))
+as begin
+insert into @M
+select c1.clubName,c2.clubName, Match.startTime, Stadium.stadiumName
+from Match inner join Club c1 on c1.ID = Match.host_ID inner join Club c2 on c2.ID = Match.guest_ID
+inner join Stadium on Stadium.ID = Match.stadium_ID where Match.startTime> CURRENT_TIMESTAMP AND (@clubname = c1.clubName or @clubname = c2.clubName)
+return
+end 
+go
+
+
+create function availableMatchesToAttend(@starttime datetime)
+returns @T table(c1name varchar(20), c2name varchar(20), starttime datetime, stadiumname varchar(20))
+as begin
+insert into @T
+select c1.clubName, c2.clubName, m.startTime, Stadium.stadiumName from Match m inner join Club c1 on c1.ID = m.host_ID 
+inner join Club c2 on c2.ID = m.guest_ID
+inner join Stadium on Stadium.ID = m.stadium_ID inner join Ticket on m.ID = Ticket.Match_ID where m.startTime> @starttime 
+AND Ticket.ID = any(select ID from Ticket where Match_ID = m.ID AND ticketStatus = '1')
+return
+end 
+go
+
+create procedure purchaseTicket @nationalid varchar(20), @hostname varchar(20), @guestname varchar(20), @starttime datetime
+as insert into ticketBuyingTransaction values(t.ID, @nationalid) where t.ID = in(
+select top 1 t.ID from Ticket t inner join Match m on t.Match_ID = m.ID inner join Club c1 on c1.ID = m.host_ID 
+inner join Club c2 on c2.ID = m.guest_ID where m.startTime = @starttime 
+AND c1.clubName= @hostname AND c2.clubName = @guestname AND t.ticketStatus = '1')
+
+
+
+
+
+
+
+
+
