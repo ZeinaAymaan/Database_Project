@@ -166,7 +166,7 @@ CREATE PROCEDURE createAllTables
     create table Ticket
         (
         ID int not null Identity primary key,
-        ticketStatus bit default 'false',
+        ticketStatus bit default 'true',
 
         Match_ID int not null
         constraint Tickets_Match_fk foreign key(Match_ID)
@@ -698,24 +698,60 @@ create procedure purchaseTicket
     as
     DECLARE @tID INT
     insert into ticketBuyingTransaction 
-    values(
+    values((SELECT fanNationalID as nID FROM Fan WHERE fanNationalID=@nationalid AND Status='1'),
     (select top 1 t.ID from Ticket t inner join Match m on t.Match_ID = m.ID inner join Club c1 on c1.ID = m.host_ID 
     inner join Club c2 on c2.ID = m.guest_ID where m.startTime = @starttime 
-    AND c1.clubName= @hostname AND c2.clubName = @guestname AND t.ticketStatus = '1'),
-    (SELECT fanNationalID as nID FROM Fan WHERE fanNationalID=@nationalid AND Status='1'))
+    AND c1.clubName= @hostname AND c2.clubName = @guestname AND t.ticketStatus = '1'))
     SET @tID=(select top 1 t.ID from Ticket t inner join Match m on t.Match_ID = m.ID inner join Club c1 on c1.ID = m.host_ID 
     inner join Club c2 on c2.ID = m.guest_ID where m.startTime = @starttime 
     AND c1.clubName= @hostname AND c2.clubName = @guestname AND t.ticketStatus = '1')
     UPDATE Ticket SET ticketStatus='0' WHERE Ticket.ID=@tID
     GO
 CREATE PROCEDURE updateMatchHost 
-    @hName VARCHAR(20), @gName VARCHAR(20), @sTime DATETIME
-    AS
+@hName VARCHAR(20), @gName VARCHAR(20), @sTime DATETIME
+AS
+declare @gID int, @hID int
+select @gID = Club.ID from Club where Club.clubName = @gName
+select @hID = Club.ID from Club where Club.clubName = @hName
+update Match set Match.guest_ID = @hID where @sTime = Match.startTime
+update Match set Match.host_ID = @gID where @sTime = Match.startTime
+go
+
+CREATE VIEW matchesPerTeam
+AS
+SELECT c1.clubName, COUNT(*) 'Number of Matches'
+FROM [Match] INNER JOIN Club c1 ON c1.ID=Match.Host_ID WHERE [Match].startTime<CURRENT_TIMESTAMP
+GROUP BY c1.clubName
+UNION
+SELECT clubName, COUNT(*) 'Number of Matches'
+FROM Club c2 INNER JOIN Match m2 ON c2.ID=m2.guest_ID WHERE [m2].startTime<CURRENT_TIMESTAMP
+GROUP BY c2.clubName
+GO
+
+create view clubsNeverMatched
+as select c1.clubName AS 'Club 1', c2.clubName AS 'Club 2' from Match inner join Club c1 on c1.ID = Match.host_ID 
+inner join Club c2 on c2.ID = Match.guest_ID where c1.ID <> Match.guest_ID AND c2.ID <> Match.host_ID 
+ AND Match.startTime < current_timestamp
+ UNION
+select c1.clubName AS 'Club 1', c2.clubName AS 'Club 2' from Match inner join Club c1 on c1.ID = Match.guest_ID 
+inner join Club c2 on c2.ID = Match.host_ID where c2.ID <> Match.guest_ID AND c1.ID <> Match.host_ID 
+ AND Match.startTime < current_timestamp
+go
 
 
-
-
-
+CREATE FUNCTION clubsNeverPlayed 
+(@cName VARCHAR(20))
+RETURNS @P TABLE (ncnames VARCHAR(20))
+AS BEGIN
+INSERT INTO @P
+SELECT c2.clubName FROM Club c2 WHERE
+c2.clubName NOT IN (SELECT cc.clubName FROM [Match] m2 INNER JOIN Club cm ON cm.ID=m2.Host_ID 
+INNER JOIN Club cc ON cc.ID=m2.guest_ID WHERE cm.clubName=@cName)
+AND c2.clubName NOT IN(SELECT cm.clubName FROM [Match] m2 INNER JOIN Club cm ON cm.ID=m2.Host_ID 
+INNER JOIN Club cc ON cc.ID=m2.guest_ID WHERE cc.clubName=@cName)
+RETURN
+END
+GO
 
 
 
