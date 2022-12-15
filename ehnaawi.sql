@@ -42,7 +42,7 @@ CREATE PROCEDURE createAllTables
         stadiumName varchar(20) not null,
         stadiumLocation varchar(20) not null,
         Capacity int not null,
-        stadiumStatus bit default 'false'
+        stadiumStatus bit default 'true'
         );
 
 
@@ -209,123 +209,124 @@ GO
 CREATE PROCEDURE clearAllTables
     AS
     --lazem nsheel kol el foreign key constraints abl ma n-truncate el table
-    ALTER TABLE ticketBuyingTransaction
-    DROP CONSTRAINT buyFanID,buyTicketID 
+    --ALTER TABLE ticketBuyingTransaction
+    --DROP CONSTRAINT buyFanID,buyTicketID 
     TRUNCATE TABLE ticketBuyingTransaction
 
-    ALTER TABLE Ticket
-    DROP CONSTRAINT Tickets_Match_fk
+    --ALTER TABLE Ticket
+    --DROP CONSTRAINT Tickets_Match_fk
     TRUNCATE TABLE Ticket
 
-    ALTER TABLE hostRequest
-    DROP CONSTRAINT Request_CR_fk, Request_SM_fk, Request_Match_fk
+    --ALTER TABLE hostRequest
+    --DROP CONSTRAINT Request_CR_fk, Request_SM_fk, Request_Match_fk
     TRUNCATE TABLE hostRequest
 
-    ALTER TABLE Match
-    DROP CONSTRAINT Match_Stadium_fk,Club_Guest_fk,Club_Host_fk
+    --ALTER TABLE Match
+    --DROP CONSTRAINT Match_Stadium_fk,Club_Guest_fk,Club_Host_fk
     TRUNCATE TABLE Match
 
-    ALTER TABLE Fan
-    DROP CONSTRAINT fanInheritence
+    --ALTER TABLE Fan
+    --DROP CONSTRAINT fanInheritence
     TRUNCATE TABLE Fan
 
-    ALTER TABLE clubRepresentative
-    DROP CONSTRAINT CR_inheretance,Club_CR_fk
+    --ALTER TABLE clubRepresentative
+    --DROP CONSTRAINT CR_inheretance,Club_CR_fk
     TRUNCATE TABLE clubRepresentative
 
     TRUNCATE TABLE Club
 
-    ALTER TABLE stadiumManager
-    DROP CONSTRAINT SM_inheretance, stadium_SM_fk
+    --ALTER TABLE stadiumManager
+    --DROP CONSTRAINT SM_inheretance, stadium_SM_fk
     TRUNCATE TABLE stadiumManager
 
     TRUNCATE TABLE Stadium
 
-    ALTER TABLE sportsAssociationManager
-    DROP CONSTRAINT SAM_inheretance
+    --ALTER TABLE sportsAssociationManager
+    --DROP CONSTRAINT SAM_inheretance
     TRUNCATE TABLE sportsAssociationManager
 
-    ALTER TABLE systemAdmin
-    DROP CONSTRAINT SA_inheretance
+    --ALTER TABLE systemAdmin
+    --DROP CONSTRAINT SA_inheretance
     TRUNCATE TABLE systemAdmin
 
     TRUNCATE TABLE systemUser
 
     --hena baraga3 el constraints 3shan manbawazsh el donya
-    ALTER TABLE ticketBuyingTransaction ADD
-    CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(national_ID),
-    CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID)
+    -- ALTER TABLE ticketBuyingTransaction ADD
+    -- CONSTRAINT buyFanID FOREIGN KEY(fanNationalID) REFERENCES Fan(national_ID),
+    -- CONSTRAINT buyTicketID FOREIGN KEY (ticketID) REFERENCES Ticket(ID)
 
-    ALTER TABLE Ticket ADD
-    CONSTRAINT Tickets_Match_fk foreign key(Match_ID) references Match(ID)
-    on delete cascade
-    on update cascade
+    -- ALTER TABLE Ticket ADD
+    -- CONSTRAINT Tickets_Match_fk foreign key(Match_ID) references Match(ID)
+    -- on delete cascade
+    -- on update cascade
 
-    ALTER TABLE hostRequest ADD
-    CONSTRAINT Request_CR_fk foreign key(CR_ID) references clubRepresentative(ID)
-    on delete cascade
-    on update cascade,
-    constraint Request_SM_fk foreign key(SM_ID)references stadiumManager(ID)
-    on delete no action
-    on update no action,
-    constraint Request_Match_fk foreign key(Match_ID) references Match(ID)
-    on delete cascade
-    on update cascade
+    -- ALTER TABLE hostRequest ADD
+    -- CONSTRAINT Request_CR_fk foreign key(CR_ID) references clubRepresentative(ID)
+    -- on delete cascade
+    -- on update cascade,
+    -- constraint Request_SM_fk foreign key(SM_ID)references stadiumManager(ID)
+    -- on delete no action
+    -- on update no action,
+    -- constraint Request_Match_fk foreign key(Match_ID) references Match(ID)
+    -- on delete cascade
+    -- on update cascade
  
-    ALTER TABLE Match ADD
-    CONSTRAINT  Match_Stadium_fk foreign key(stadium_ID) references Stadium(ID)
-    on delete cascade
-    on update cascade,
-    constraint Club_Guest_fk foreign key(guest_ID) references Club(ID)
-    on delete no action
-    on update no action,
-    constraint Club_Host_fk foreign key(Host_ID) references Club(ID)
-    on delete no action
-    on update no action
+    -- ALTER TABLE Match ADD
+    -- CONSTRAINT  Match_Stadium_fk foreign key(stadium_ID) references Stadium(ID)
+    -- on delete cascade
+    -- on update cascade,
+    -- constraint Club_Guest_fk foreign key(guest_ID) references Club(ID)
+    -- on delete no action
+    -- on update no action,
+    -- constraint Club_Host_fk foreign key(Host_ID) references Club(ID)
+    -- on delete no action
+    -- on update no action
 
-    ALTER TABLE Fan ADD
-    CONSTRAINT fanInheritence FOREIGN KEY (fanUsername)
-    REFERENCES systemUser(username) ON DELETE CASCADE ON UPDATE CASCADE
+    -- ALTER TABLE Fan ADD
+    -- CONSTRAINT fanInheritence FOREIGN KEY (fanUsername)
+    -- REFERENCES systemUser(username) ON DELETE CASCADE ON UPDATE CASCADE
 
-    ALTER TABLE clubRepresentative ADD 
-    CONSTRAINT CR_inheretance foreign key (Username) references systemUser(username)
-    on delete cascade
-    on update cascade,
-    constraint Club_CR_fk foreign key(club_ID) references Club(ID)
-    on delete cascade
-    on update cascade
+    -- ALTER TABLE clubRepresentative ADD 
+    -- CONSTRAINT CR_inheretance foreign key (Username) references systemUser(username)
+    -- on delete cascade
+    -- on update cascade,
+    -- constraint Club_CR_fk foreign key(club_ID) references Club(ID)
+    -- on delete cascade
+    -- on update cascade
 
-    ALTER TABLE stadiumManager ADD
-    constraint SM_inheretance foreign key(username) references systemUser(username)
-    on delete cascade
-    on update cascade,
-    constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
-    on update cascade
-    on delete cascade
+    -- ALTER TABLE stadiumManager ADD
+    -- constraint SM_inheretance foreign key(username) references systemUser(username)
+    -- on delete cascade
+    -- on update cascade,
+    -- constraint stadium_SM_fk foreign key(Stadium_ID) references Stadium(ID)
+    -- on update cascade
+    -- on delete cascade
 
-    ALTER TABLE sportsAssociationManager ADD
-    constraint SAM_inheretance foreign key(username) references systemUser(username)
-    on delete cascade
-    on update cascade
+    -- ALTER TABLE sportsAssociationManager ADD
+    -- constraint SAM_inheretance foreign key(username) references systemUser(username)
+    -- on delete cascade
+    -- on update cascade
 
-    ALTER TABLE systemAdmin ADD
-    constraint SA_inheretance foreign key(username) references systemUser(username)
-    on delete cascade
-    on update cascade
+    -- ALTER TABLE systemAdmin ADD
+    -- constraint SA_inheretance foreign key(username) references systemUser(username)
+    -- on delete cascade
+    -- on update cascade
 GO
 EXEC clearAllTables
 
 GO
 CREATE VIEW allAssocManagers 
     AS
-    SELECT sportsAssociationManagerUsername 'Username',
-    sportsAssociationManagerName 'Name'FROM sportsAssociationManager
+    SELECT sportsAssociationManagerUsername 'Username', systemUser.systemUserPassword 'Password',
+    sportsAssociationManagerName 'Name'
+    FROM sportsAssociationManager sa INNER JOIN systemUser ON systemUser.username=sa.sportsAssociationManagerUsername
 GO
 CREATE VIEW allClubRepresentatives
     AS
-    SELECT cr.clubRepresentativeUsername 'Username',
+    SELECT cr.clubRepresentativeUsername 'Username',  systemUser.systemUserPassword 'Password',
     cr.clubRepresentativeName 'Name',Club.clubName as 'Club Represented'
-    FROM clubRepresentative cr
+    FROM clubRepresentative cr INNER JOIN systemUser ON cr.clubRepresentativeUsername=systemUser.username
     INNER JOIN Club ON cr.club_ID = Club.ID
 GO
 CREATE VIEW allStadiumManagers
@@ -775,3 +776,20 @@ ALTER DATABASE ehnaawi SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 -- Drop the database if it exists
 DROP DATABASE ehnaawi
 GO 
+INSERT INTO systemUser 
+VALUES('mayarrbahnacy','mayOoRaElaM0orA'),('zeinaGabAllah','zoZZaElmoZZa'),('farahdawod','tuTiAlpi<3'),('saraayman','iLoVeMycAr'),('naglaafathi','anaOmfaRah'),
+('nourbahnacy','iBelieveinUnicoRns'),('moamenelzayat','anaba7ebFARAH'),('magdyhussein','sha3RelEidREDFLAG'),('zabzoobmota7arek','iMgAy11'),('zhe2t','keFaYakEda')
+
+INSERT INTO systemAdmin VALUES('Farah','farahdawod')
+INSERT INTO sportsAssociationManager VALUES('Sara','saraayman')
+INSERT INTO Stadium(stadiumName,stadiumLocation,Capacity) VALUES ('Borg El Arab','Cairo',86000),('Egyptian Army','Suez',45000),('Rungrado','North Korea',114000),
+('Melbourne Cricket','Australia',100024),('Camp Nou','Spain',99354),('FNB','South Africa',94736),('Rose Bowl','USA',92542),('Wembley','UK',90000),
+('Bukit Jalil','Malaysia',87411),('Estadio Azteca','Mexico',87000)
+INSERT INTO systemUser 
+VALUES('Rui_a','fghvjbk'),('mhussein','fcghv'),('sCock','plmn'),('parSons','etghn'),('vi','barca<3'),('vic','capeTownisMyTown'),
+('JenW','ytpplarecrzy'),('LB','iLoveShakira'),('MoFay','burgjl'),('flex','iAintFlexiN')
+INSERT INTO stadiumManager VALUES ('Rui Águas','Rui_a',1),('Mahmoud Hussein','mhussein',2),('Simon Cockerell','sCock',3),
+('Haydn Parsons','parSons',4),('Xavi','vi',5),('Gert Victor','vic',6),('Jens Weiden','JenW',7),('Liam Boylan','LB',8),
+('Mohd Faidz Sanusi','MoFay',9),('Felix Aguirre','flex',10)
+SELECT* FROM allAssocManagers
+SELECT* FROM allClubRepresentatives
