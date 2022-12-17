@@ -718,6 +718,16 @@ CREATE PROCEDURE blockFan
 
 GO
 
+exec blockFan '3030319141962';
+exec purchaseTicket '3030319141962', 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
+exec unblockFan '3030319141962';
+select * from fan;
+select * from match;
+select * from club;
+select distinct id from Ticket where ticketStatus = 0;
+
+go
+
 CREATE PROCEDURE unblockFan 
     @nationalID VARCHAR(20)
     AS
@@ -856,7 +866,7 @@ CREATE FUNCTION allPendingRequests
 
 GO
 
-select * from dbo.allPendingRequests('farouha');
+select * from dbo.allPendingRequests('mayora');
 
 go
 
@@ -942,6 +952,7 @@ GO
 drop proc addFan;
 exec addFan 'Ahmed Mohsen', 'mohsenjr', 'production.com', '30108112112304', '2001-08-11', 'Ain Shams', 01000498966;
 exec addFan 'Mohamed Abdel Azim', '3b3z' , 'quack', '30108270456898', '2001-08-27', 'October', 01121267129;
+exec addFan 'Farah Dawod', 'farohaAgain', ' 123456', '3030319141962', '2003-03-19', 'Mansoura', 01095772840;
 select * from Fan;
 
 go
@@ -1149,12 +1160,13 @@ go
 
 CREATE FUNCTION matchesRankedByAttendance    
     () RETURNS @P TABLE (hcname VARCHAR(20), gcname VARCHAR(20))
-    AS BEGIN
+    AS 
+    BEGIN
     INSERT INTO @P
     SELECT c1.clubName 'Host Club',c2.clubName 'Guest Club' 
-    FROM    Ticket t INNER JOIN [Match] ON t.Match_ID=[Match].ID INNER JOIN Club c1 ON c1.ID=[Match].Host_ID 
-    INNER JOIN Club c2 ON c2.ID=[Match].guest_ID
-    WHERE   ticketStatus='0' AND [Match].startTime<CURRENT_TIMESTAMP
+    FROM Ticket t INNER JOIN [Match] ON t.Match_ID = [Match].ID INNER JOIN Club c1 ON c1.ID = [Match].Host_ID 
+        INNER JOIN Club c2 ON c2.ID = [Match].guest_ID
+    WHERE ticketStatus = '0' AND [Match].startTime < CURRENT_TIMESTAMP
     GROUP BY c1.clubName,c2.clubName 
     ORDER BY COUNT(t.ID) DESC
     RETURN
@@ -1167,6 +1179,8 @@ select * from ticketBuyingTransaction;
 select * from club;
 select * from match;
 select distinct Ticket.Match_ID from Ticket
+exec addTicket 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
+exec purchaseTicket '30108270456898', 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
 exec purchaseTicket '30108270456898', 'Real Madrid', 'Manchester City', '2022-12-31 05:00:00.000';
 
 go
@@ -1175,16 +1189,44 @@ CREATE FUNCTION requestsFromClub
     (@sName VARCHAR(20), @cName VARCHAR(20))
     RETURNS @F TABLE (hname VARCHAR(20), gname VARCHAR(20))
     AS BEGIN
+
+    declare @sID int, @hostID int, @matchID int, @crID int, @smID int;
+
+    select @hostID = c.ID
+    from Club c
+    where c.clubName = @cName;
+
+    select @crID = cr.ID
+    from clubRepresentative cr inner join Club c on cr.club_ID = c.ID
+    where c.ID = @hostID;
+
+    select @sID = s.ID
+    from Stadium s
+    where s.stadiumName = @sName;
+
+    select @smID = sm.ID
+    from stadiumManager sm inner join Stadium s on sm.Stadium_ID = s.ID
+    where s.stadiumName = @sName;
+
     INSERT INTO @F 
-    SELECT ch.clubName, cg.clubName FROM Club ch INNER JOIN clubRepresentative cr ON ch.ID=cr.club_ID INNER JOIN [Match] ON ch.ID=[Match].Host_ID INNER JOIN Club cg ON
-    cg.ID=[Match].guest_ID INNER JOIN hostRequest hr ON hr.CR_ID=cr.ID INNER JOIN stadiumManager sm ON sm.ID=hr.SM_ID INNER JOIN Stadium s ON s.ID=sm.Stadium_ID
-    WHERE s.stadiumName=@sName AND ch.clubName=@cName AND hr.[Status]='unhandeled'
+
+    select @cName, c.clubName
+    from hostRequest hr inner join Match m on hr.ID = m.ID
+        inner join Club c on c.ID = m.guest_ID
+    where hr.Status = 'unhandled' and hr.CR_ID = @crID and hr.SM_ID = @smID;
+
     RETURN
     END
 
 GO 
 
-
+drop function requestsFromClub;
+select * from hostRequest;
+select * from Match;
+select * from Club;
+select * from stadiumManager;
+select * from Stadium;
+select * from dbo.requestsFromClub('Camp Nou', 'Atletico Madrid');
 
 go
 
