@@ -214,11 +214,7 @@ CREATE PROCEDURE dropAllTables
     AS 
 
     alter table ticketBuyingTransaction
-    drop constraint buy_pk;
-    alter table ticketBuyingTransaction
-    drop constraint buyTicketID_fk;
-    alter table ticketBuyingTransaction
-    drop constraint buyFanID_fk;
+    drop constraint buy_pk,buyFanID_fk,buyTicketID_fk
     DROP TABLE ticketBuyingTransaction;
 
     alter table ticket
@@ -226,11 +222,8 @@ CREATE PROCEDURE dropAllTables
     DROP TABLE Ticket;
 
     alter table hostRequest
-    drop constraint Request_CR_fk
-    alter table hostRequest
-    drop constraint Request_SM_fk
-    alter table hostRequest
-    drop constraint Request_Match_fk
+    drop constraint Request_CR_fk,Request_SM_fk,Request_Match_fk
+   
     DROP TABLE hostRequest;
 
     alter table Match
@@ -310,7 +303,7 @@ CREATE PROCEDURE clearAllTables
     TRUNCATE TABLE Match;
 
     alter table fan
-    drop constraint fan_Inheritence_fk;
+    drop constraint fan_inheretance_fk;
     TRUNCATE TABLE Fan;
 
     alter table clubRepresentative
@@ -469,7 +462,7 @@ GO
 
 CREATE VIEW allMatches
     AS
-    SELECT Club1.clubName as 'First Competing Club' , Club2.clubName as 'Second Competing Club',
+    SELECT Club1.clubName as 'Host Club' , Club2.clubName as 'Guest Club',
     startTime 'Start Time'
     FROM Match
     INNER JOIN Club Club1 ON Club1.ID = Match.Host_ID 
@@ -479,8 +472,8 @@ GO
 
 CREATE VIEW allTickets
     AS 
-    SELECT [First Competing Club] 'Host Club',
-    [Second Competing Club] 'Guest Club', Stadium.stadiumName as 'Stadium Name', [Start Time]
+    SELECT [Host Club] 'Host Club',
+    [Guest Club] 'Guest Club', Stadium.stadiumName as 'Stadium Name', [Start Time]
     FROM allMatches, Match
     INNER JOIN Stadium ON Match.stadium_ID = Stadium.ID
 
@@ -521,11 +514,6 @@ create procedure addAssociationManager
 
 GO
 
-exec addAssociationManager 'Zeina Ayman', 'zeinaayman', '123456';
-select * from systemUser;
-select * from sportsAssociationManager;
-
-GO
 create procedure addNewMatch
     @club1 varchar(20), @club2 varchar(20),@time datetime, @endtime DATETIME 
     as
@@ -545,8 +533,6 @@ create procedure addNewMatch
 
 GO
 
-GO
-
 CREATE VIEW clubsWithNoMatches 
     as
     select c1.clubName 'Club Name'
@@ -556,7 +542,6 @@ CREATE VIEW clubsWithNoMatches
 
 GO
 
-GO
 CREATE PROCEDURE deleteMatch 
     @club1 varchar(20), @club2 varchar(20)
     as
@@ -598,23 +583,6 @@ CREATE PROCEDURE addClub
 
 GO
 
-exec addClub 'Barcelona', 'Spain';
-exec addClub 'Real Madrid', 'Spain';
-exec addClub 'Liverpool' , 'England';
-exec addClub 'Atletico Madrid', 'Spain';
-exec addClub 'Bayern Munich', 'Germany';
-exec addClub 'Inter Milan', 'Italy';
-exec addClub 'Tottenham', 'England';
-exec addClub 'Manchester City', 'England';
-exec addClub 'Manchester United', 'England';
-exec addClub 'Juventus', 'Italy';
-exec deleteMatch 'Real Madrid', 'Liverpool';
-select * from allMatches
-select * from Match;
-select * from clubsWithNoMatches;
-select * from allCLubs;
-
-GO
 CREATE PROCEDURE addTicket
     @host varchar(20), @guest varchar(20), @time datetime
     as
@@ -650,25 +618,12 @@ CREATE PROCEDURE addTicket
 
 GO
 
-select * from Match;
-select * from Club;
-select * from Stadium;
-select * from Ticket;
-exec addTicket 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
-
-go
-
 CREATE PROCEDURE deleteClub
     @name varchar(20)
     as
     delete from Club where @name = Club.clubName;
 
 GO
-
-exec deleteClub 'Juventus';
-select * from allCLubs;
-
-go
 
 CREATE PROCEDURE addStadium
     @name varchar(20), @location varchar(20), @capacity int
@@ -678,17 +633,6 @@ CREATE PROCEDURE addStadium
 
 GO
 
-exec addStadium 'Camp Nou', 'Spain', 99354;
-exec addStadium 'Santiago Bernabeu', 'Spain', 81044;
-exec addStadium 'Borg El Arab', 'Egypt', 50400;
-exec deleteMatchesOnStadium 'Borg El Arab';
-select * from allMatches;
-select * from allStadiums;
-select * from Match;
-
-
-go
-
 CREATE PROCEDURE deleteStadium 
     @name varchar(20)
     as
@@ -696,9 +640,6 @@ CREATE PROCEDURE deleteStadium
 
 GO
 
-exec deleteStadium 'Borg El Arab';
-
-GO
 CREATE PROCEDURE blockFan 
     @nationalID VARCHAR(20)
     AS
@@ -706,15 +647,6 @@ CREATE PROCEDURE blockFan
 
 GO
 
-exec blockFan '3030319141962';
-exec purchaseTicket '3030319141962', 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
-exec unblockFan '3030319141962';
-select * from fan;
-select * from match;
-select * from club;
-select distinct id from Ticket where ticketStatus = 0;
-
-GO
 CREATE PROCEDURE unblockFan 
     @nationalID VARCHAR(20)
     AS
@@ -733,15 +665,6 @@ CREATE PROCEDURE addRepresentative
 
 GO
 
-exec addRepresentative 'Zeina Gaballah', 'Atletico Madrid', 'zeinaGaballah', '123456';
-exec addRepresentative 'Sara Wasfy', 'Tottenham', 'sarawasfy', '123456';
-exec addRepresentative 'Christiano Ronaldo', 'Real Madrid', 'ronaldo7', 'CR7';
-
-select * from clubRepresentative;
-select * from allClubRepresentatives;
-
-
-go
 CREATE FUNCTION viewAvailableStadiumsOn
     (@rtime DATETIME)
     RETURNS @S TABLE (stadiumName VARCHAR(20), stadiumLocation VARCHAR(20), Capacity INT)
@@ -749,16 +672,14 @@ CREATE FUNCTION viewAvailableStadiumsOn
     BEGIN
     INSERT INTO @S
     SELECT stadiumName, stadiumLocation, Capacity 
-    FROM Stadium LEFT OUTER JOIN [Match] ON [Match].stadium_ID=Stadium.ID
-    WHERE Stadium.[stadiumStatus]='1' AND [Match].ID NOT IN (SELECT ID FROM [Match] WHERE startTime=@rtime)
+    FROM Stadium
+    WHERE ID NOT IN (SELECT stadium_ID FROM Match WHERE startTime=@rtime) OR
+     (SELECT stadium_ID FROM Match WHERE startTime=@rtime) IS NULL
     RETURN ;
     END
 
 GO
 
-select * from dbo.viewAvailableStadiumsOn ('2022-02-21 03:00');
-
-GO
 CREATE PROCEDURE addHostRequest 
     @cName VARCHAR(20), @Sname VARCHAR(20), @sTime DATETIME
     AS
@@ -777,33 +698,13 @@ CREATE PROCEDURE addHostRequest
     from Match m inner join Club c on m.Host_ID = c.ID
     where @sTime = m.startTime and m.stadium_ID IS NULL;
 
-    IF(@Sname IN (select * from dbo.viewAvailableStadiumsOn (@sTime)))
-        INSERT INTO hostRequest(CR_ID, SM_ID, Match_ID) VALUES (@cr, @sm, @matchID);
-
+    IF(@Sname IN (select stadiumName from dbo.viewAvailableStadiumsOn (@sTime)) 
+    AND @matchID NOT IN (SELECT Match_ID FROM hostRequest WHERE Status='unhandled'OR Status= 'accepted'))
+    BEGIN
+    INSERT INTO hostRequest(CR_ID, SM_ID, Match_ID) VALUES (@cr, @sm, @matchID)
+    END
+    
 GO
-
-drop proc addHostRequest;
-exec addNewMatch 'Atletico Madrid' , 'Barcelona', '2022-07-21 07:00', '2022-07-21 09:45';
-exec addNewMatch 'Atletico Madrid', 'Liverpool', '2022-08-10 05:00', '2022-08-10 07:25';
-exec addNewMatch 'Real Madrid', 'Manchester City', '2022-12-25 09:00', '2022-12-25 11:00';
-exec addNewMatch 'Bayern Munich', 'Liverpool', '2022-11-1 04:00', '2022-11-1 06:30';
-exec addNewMatch 'Real Madrid', 'Liverpool', '2022-02-21 10:00', '2022-02-22 12:00';
-exec addNewMatch 'Tottenham', 'Inter Milan', '2022-03-08 10:00', '2022-03-09 12:15';
-
-exec addHostRequest 'Tottenham', 'Camp Nou', '2022-03-08 10:00';
-exec addHostRequest 'Atletico Madrid', 'Camp Nou', '2022-07-21 07:00';
-exec addHostRequest 'Atletico Madrid', 'Santiago Bernabeu', '2022-08-10 05:00:00.000';
-exec addHostRequest 'Real Madrid', 'Borg El Arab', '2022-12-25 09:00';
-exec addHostRequest 'Real Madrid', 'Santiago Bernabeu', '2022-12-25 09:00';
-
-select * from allClubRepresentatives;
-select * from stadiumManager;
-select * from allRequests;
-select * from allMatches;
-select * from club;
-select * from stadium;
-
-go
 
 CREATE FUNCTION allUnassignedMatches
     (@cName VARCHAR(20))
@@ -819,13 +720,6 @@ CREATE FUNCTION allUnassignedMatches
 
 GO
 
-select * from match;
-select * from club;
-select * from dbo.allUnassignedMatches('Tottenham');
-
-
-go
-
 CREATE PROCEDURE addStadiumManager 
     @name varchar(20), @stadium_name varchar(20), @username varchar(20), @password varchar(20)
     as declare @stadium_ID int
@@ -835,16 +729,6 @@ CREATE PROCEDURE addStadiumManager
     values(@name, @stadium_ID,@username)
 
 GO
-
-exec addStadiumManager 'Farah Dawod', 'Camp Nou', 'farouha', 'playes';
-exec addStadiumManager 'Mayar Bahnacy', 'Santiago Bernabeu', 'mayora', '123456';
-exec addStadiumManager 'Magdy', 'Borg El Arab', 'magdy', 'notBi';
-
-select * from allStadiumManagers;
-select * from allClubRepresentatives;
-select * from systemUser;
-
-go
 
 CREATE FUNCTION allPendingRequests 
     (@username varchar(20))
@@ -862,9 +746,6 @@ CREATE FUNCTION allPendingRequests
 
 GO
 
-select * from dbo.allPendingRequests('farouha');
-
-GO
 CREATE PROCEDURE acceptRequest 
     @username varchar(20), @hostclubname varchar(20), @guestclubname varchar(20), @starttime datetime
     as
@@ -905,15 +786,6 @@ CREATE PROCEDURE acceptRequest
 
 GO
 
-drop proc acceptRequest;
-select * from allClubRepresentatives;
-select * from allRequests;
-select * from Match;
-SELECT * from Stadium
-select * from allMatches;
-select * from hostRequest;
-
-GO
 CREATE PROCEDURE rejectRequest 
     @username varchar(20), @hostclubname varchar(20), @guestclubname varchar(20), @starttime datetime
     as
@@ -934,15 +806,10 @@ CREATE PROCEDURE rejectRequest
 
     update hostRequest 
     set Status = 'rejected'
-    where hostRequest.Match_ID = @matchID;
+    where hostRequest.Match_ID = @matchID and Status='unhandled';
 
 GO
 
-exec acceptRequest 'magdy', 'Real Madrid', 'Manchester City', '2022-12-25 09:00';
-exec acceptRequest 'mayora', 'Real Madrid', 'Manchester City', '2022-12-25 09:00';
-exec acceptRequest 'farouha', 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
-
-GO
 CREATE PROCEDURE addFan 
     @name varchar(20), @username varchar(20), @password varchar(20), @nationalid varchar(20), @birthdate datetime, 
     @address varchar(20), @phonenum int
@@ -952,13 +819,6 @@ CREATE PROCEDURE addFan
 
 GO
 
-drop proc addFan;
-exec addFan 'Ahmed Mohsen', 'mohsenjr', 'production.com', '30108112112304', '2001-08-11', 'Ain Shams', 01000498966;
-exec addFan 'Mohamed Abdel Azim', '3b3z' , 'quack', '30108270456898', '2001-08-27', 'October', 01121267129;
-exec addFan 'Farah Dawod', 'farohaAgain', ' 123456', '3030319141962', '2003-03-19', 'Mansoura', 01095772840;
-select * from allFans;
-
-GO
 CREATE FUNCTION upcomingMatchesOfClub
     (@clubname varchar(20))
     returns @M table( HostName varchar(20), GuestName varchar(20), startTime datetime, stadiumName varchar(20))
@@ -971,11 +831,6 @@ CREATE FUNCTION upcomingMatchesOfClub
     end 
 
 GO
-select * from dbo.upcomingMatchesOfClub('Manchester City');
-select * from club
-select * from match
-
-go
 
 CREATE FUNCTION availableMatchesToAttend
     (@starttime datetime)
@@ -996,19 +851,6 @@ CREATE FUNCTION availableMatchesToAttend
 
 GO
 
-drop function availableMatchesToAttend;
-select * from Match;
-select * from Ticket;
-select * from Fan;
-exec addTicket 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
-select * from dbo.availableMatchesToAttend('2022-12-25 09:00:00.000');
-exec addNewMatch 'Real Madrid', 'Manchester City', '2022-12-31 05:00', '2022-12-31 07:00';
-exec addHostRequest 'Real Madrid', 'Camp Nou', '2022-12-31 05:00';
-exec acceptrequest 'ronaldo7', 'Real Madrid', 'Manchester City', '2022-12-31 05:00';
-exec addTicket 'Real Madrid', 'Manchester City', '2022-12-31 05:00';
-
-go
-
 CREATE PROCEDURE purchaseTicket 
     @nationalid varchar(20), @hostname varchar(20), @guestname varchar(20), @starttime datetime
     as
@@ -1025,16 +867,6 @@ CREATE PROCEDURE purchaseTicket
 
 GO
 
-exec purchaseTicket '30108270456898', 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
-select * from fan
-select * from club;
-select * from allMatches;
-select * from Ticket where Match_ID = 4;
-select * from ticketBuyingTransaction;
-select distinct Ticket.Match_ID from Ticket;
-
-go
-
 CREATE PROCEDURE updateMatchHost 
     @hName VARCHAR(20), @gName VARCHAR(20), @sTime DATETIME
     AS
@@ -1048,12 +880,6 @@ CREATE PROCEDURE updateMatchHost
 
 GO
 
-drop proc updateMatchHost;
-select * from club;
-select * from match;
-exec updateMatchHost 'Bayern Munich', 'Liverpool', '2022-11-01 04:00:00.000';
-
-go
 
 CREATE VIEW matchesPerTeam
     AS
@@ -1067,41 +893,16 @@ CREATE VIEW matchesPerTeam
 
 GO
 
-select * from matchesPerTeam;
-
-go
-
-create view clubsNeverMatched
-    as 
-
-    select distinct c1.clubName,c2.clubName, m.id
-    from Club c1 full outer join Match m on c1.ID = m.Host_ID
-    full outer join Club c2 on m.guest_ID = c2.ID
-    where m.ID is null
-
-
-
-    select c1.clubName AS 'Club 1', c2.clubName AS 'Club 2' from Match inner join Club c1 on c1.ID = Match.host_ID 
-    inner join Club c2 on c2.ID = Match.guest_ID where c1.ID <> Match.guest_ID AND c2.ID <> Match.host_ID 
-    AND Match.startTime < current_timestamp AND c2.clubName NOT IN(SELECT cc.clubName FROM [Match] m2 INNER JOIN Club cm ON cm.ID=m2.Host_ID 
-    INNER JOIN Club cc ON cc.ID=m2.guest_ID WHERE cm.clubName=c1.clubName)
-    AND c1.clubName NOT IN(SELECT cm.clubName FROM [Match] m2 INNER JOIN Club cm ON cm.ID=m2.Host_ID 
-    INNER JOIN Club cc ON cc.ID=m2.guest_ID WHERE cc.clubName=c2.clubName)
-    UNION
-    select c1.clubName AS 'Club 1', c2.clubName AS 'Club 2' from Match inner join Club c1 on c1.ID = Match.guest_ID 
-    inner join Club c2 on c2.ID = Match.host_ID where c2.ID <> Match.guest_ID AND c1.ID <> Match.host_ID 
-    AND Match.startTime < current_timestamp AND 
-    c1.clubName NOT IN(SELECT cc.clubName FROM [Match] m2 INNER JOIN Club cm ON cm.ID=m2.Host_ID 
-    INNER JOIN Club cc ON cc.ID=m2.guest_ID WHERE cm.clubName=c2.clubName) AND
-    c2.clubName NOT IN(SELECT cm.clubName FROM [Match] m2 INNER JOIN Club cm ON cm.ID=m2.Host_ID 
-    INNER JOIN Club cc ON cc.ID=m2.guest_ID WHERE cc.clubName=c1.clubName)
-
+CREATE VIEW clubsNeverMatched
+    AS 
+    SELECT DISTINCT c1.clubName 'First Club Name', c2.clubName 'Second Club Name '
+    FROM Club c1, Club c2
+    WHERE c1.clubName < c2.clubName 
+    AND c2.ID NOT IN
+    (SELECT Host_ID FROM Match WHERE guest_ID=c1.ID
+    UNION 
+    SELECT guest_ID FROM Match WHERE c1.ID = HOST_ID)
 GO
-
-drop view clubsNeverMatched
-select * from clubsNeverMatched;
-
-go
 
 CREATE FUNCTION clubsNeverPlayed 
     (@cName VARCHAR(20))
@@ -1124,13 +925,6 @@ CREATE FUNCTION clubsNeverPlayed
     END
 
 GO
-
-drop function clubsNeverPlayed;
-select * from club;
-select * from match;
-select * from dbo.clubsNeverPlayed('Atletico Madrid');
-
-go
 
 CREATE FUNCTION matchWithHighestAttendance
     () RETURNS @P TABLE (hcname VARCHAR(20), gcname VARCHAR(20))
@@ -1155,10 +949,6 @@ CREATE FUNCTION matchWithHighestAttendance
 
 GO
 
-select * from dbo.matchWithHighestAttendance();
-
-go
-
 CREATE FUNCTION matchesRankedByAttendance    
     () RETURNS @P TABLE (hcname VARCHAR(20), gcname VARCHAR(20))
     AS 
@@ -1174,17 +964,6 @@ CREATE FUNCTION matchesRankedByAttendance
     END
 
 GO
-
-select * from dbo.matchesRankedByAttendance();
-select * from ticketBuyingTransaction;
-select * from club;
-select * from match;
-select distinct Ticket.Match_ID from Ticket
-exec addTicket 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
-exec purchaseTicket '30108270456898', 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
-exec purchaseTicket '30108270456898', 'Real Madrid', 'Manchester City', '2022-12-31 05:00:00.000';
-
-go
 
 CREATE FUNCTION requestsFromClub
     (@sName VARCHAR(20), @cName VARCHAR(20))
@@ -1213,23 +992,13 @@ CREATE FUNCTION requestsFromClub
 
     select @cName, c.clubName
     from hostRequest hr inner join Match m on hr.ID = m.ID
-        inner join Club c on c.ID = m.guest_ID
+    inner join Club c on c.ID = m.guest_ID
     where hr.Status = 'unhandled' and hr.CR_ID = @crID and hr.SM_ID = @smID;
 
     RETURN
     END
 
 GO 
-
-drop function requestsFromClub;
-select * from hostRequest;
-select * from Match;
-select * from Club;
-select * from stadiumManager;
-select * from Stadium;
-select * from dbo.requestsFromClub('Camp Nou', 'Atletico Madrid');
-
-go
 
 CREATE PROCEDURE dropAllProceduresFunctionsViews
     As
@@ -1258,11 +1027,11 @@ CREATE PROCEDURE dropAllProceduresFunctionsViews
 
     drop view allAssocManagers;
     drop view allClubRepresentatives;
+    drop view allStadiumManagers;
     drop view allCLubs;
     drop view allFans;
     drop view allMatches;
     drop view allRequests;
-    drop view allStadiumManagers;
     drop view allStadiums;
     drop view allTickets;
     drop view clubsWithNoMatches;
@@ -1313,6 +1082,99 @@ DROP DATABASE ehnaawi
 --SELECT* FROM allAssocManagers
 --SELECT* FROM allClubRepresentatives
 
-IF('Camp Nou' IN (select stadiumName from dbo.viewAvailableStadiumsOn ('2022-02-21 03:00'))) THEN
-    exec addRepresentative 'Lionel Messi', 'Barcelona', 'lmessi', 'goat';
-END IF;
+--MOCK DB
+    SELECT * FROM allFans
+    exec addClub 'Barcelona', 'Spain';
+    exec addClub 'Real Madrid', 'Spain';
+    exec addClub 'Liverpool' , 'England';
+    exec addClub 'Atletico Madrid', 'Spain';
+    exec addClub 'Bayern Munich', 'Germany';
+    exec addClub 'Inter Milan', 'Italy';
+    exec addClub 'Tottenham', 'England';
+    exec addClub 'Manchester City', 'England';
+    exec addClub 'Manchester United', 'England';
+    exec addClub 'Juventus', 'Italy';
+
+    select * from clubsWithNoMatches;
+    select * from allCLubs;
+
+    exec deleteClub 'Juventus';
+    select * from allCLubs;
+    EXEC addAssociationManager 'Farah Daoud', 'farouhaalo','tutialpino1'
+    exec addRepresentative 'Zeina Gaballah', 'Atletico Madrid', 'zeinaGaballah', '123456';
+    exec addRepresentative 'Sara Wasfy', 'Tottenham', 'sarawasfy', '123456';
+    exec addRepresentative 'Christiano Ronaldo', 'Real Madrid', 'ronaldo7', 'CR7';
+
+    select * from allClubRepresentatives;
+
+    exec addStadium 'Camp Nou', 'Spain', 99354;
+    exec addStadium 'Santiago Bernabeu', 'Spain', 81044;
+    exec addStadium 'Borg El Arab', 'Egypt', 50400;
+    exec deleteStadium 'Borg El Arab';
+
+    select * from allStadiums;
+    exec addNewMatch 'Atletico Madrid' , 'Barcelona', '2022-07-21 07:00', '2022-07-21 09:45';
+    exec addNewMatch 'Atletico Madrid', 'Liverpool', '2022-08-10 05:00', '2022-08-10 07:25';
+    exec addNewMatch 'Real Madrid', 'Manchester City', '2022-12-25 09:00', '2022-12-25 11:00';
+    exec addNewMatch 'Bayern Munich', 'Liverpool', '2022-11-1 04:00', '2022-11-1 06:30';
+    exec addNewMatch 'Real Madrid', 'Liverpool', '2022-02-21 10:00', '2022-02-22 12:00';
+    exec addNewMatch 'Tottenham', 'Inter Milan', '2022-03-08 10:00', '2022-03-09 12:15';
+    EXEC addNewMatch 'Barcelona', 'Manchester United', '2022-03-19 05:15','2022-03-19 07:30';
+    EXEC updateMatchHost 'Bayern Munich', 'Liverpool', '2022-11-1 04:00'
+
+    SELECT * From allMatches;
+
+    exec addStadiumManager 'Farah Dawod', 'Camp Nou', 'farouha', 'playes';
+    exec addStadiumManager 'Mayar Bahnacy', 'Santiago Bernabeu', 'mayora', '123456';
+    exec addStadiumManager 'Magdy', 'Borg El Arab', 'magdy', 'notBi';
+
+    select * from allStadiumManagers;
+    select * from allClubRepresentatives;
+    select * from systemUser;
+
+    exec addHostRequest 'Tottenham', 'Camp Nou', '2022-03-08 10:00';
+    exec addHostRequest 'Atletico Madrid', 'Camp Nou', '2022-07-21 07:00';
+    exec addHostRequest 'Atletico Madrid', 'Santiago Bernabeu', '2022-08-10 05:00:00.000';
+    exec addHostRequest 'Real Madrid', 'Borg El Arab', '2022-12-25 09:00';
+    exec addHostRequest 'Real Madrid', 'Santiago Bernabeu', '2022-12-25 09:00';
+
+    select * from allClubRepresentatives;
+    select * from stadiumManager;
+    select * from allRequests;
+    select * from allMatches;
+    SELECT * FROM Stadium;
+    select * from dbo.viewAvailableStadiumsOn ('2022-03-08 10:00')
+    select * from dbo.allUnassignedMatches('Tottenham');
+    select * from dbo.allPendingRequests('farouha');
+
+    exec acceptRequest 'magdy', 'Real Madrid', 'Manchester City', '2022-12-25 09:00';
+    exec acceptRequest 'farouha', 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
+    EXEC rejectRequest 'farouha', 'Tottenham', 'Inter Milan', '2022-03-08 10:00'
+
+    exec addTicket 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
+    exec addTicket 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
+
+    exec deleteMatch 'Real Madrid', 'Liverpool';
+
+    exec deleteMatchesOnStadium 'Borg El Arab';
+    select * from allMatches;
+    
+    select * from dbo.upcomingMatchesOfClub('Manchester City');
+
+    exec addFan 'Ahmed Mohsen', 'mohsenjr', 'production.com', '30108112112304', '2001-08-11', 'Ain Shams', 01000498966;
+    exec addFan 'Mohamed Abdel Azim', '3b3z' , 'quack', '30108270456898', '2001-08-27', 'October', 01121267129;
+    exec addFan 'Farah Dawod', 'farohaAgain', ' 123456', '3030319141962', '2003-03-19', 'Mansoura', 01095772840;
+    select * from allFans;
+    exec blockFan '3030319141962';
+    exec purchaseTicket '3030319141962', 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
+    exec unblockFan '3030319141962';
+    select * from fan;
+    select * from match;
+
+    select * from dbo.availableMatchesToAttend('2022-12-25 09:00:00.000');
+    exec addTicket 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
+    exec purchaseTicket '30108270456898', 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
+    exec purchaseTicket '30108270456898', 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
+   
+
+
