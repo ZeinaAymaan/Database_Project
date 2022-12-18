@@ -22,7 +22,6 @@ CREATE PROCEDURE createAllTables
         on delete cascade
         on update cascade,
 
-        --systemAdminpassword varchar(20) not null,
         );
 
     create table sportsAssociationManager
@@ -36,7 +35,6 @@ CREATE PROCEDURE createAllTables
         on delete cascade
         on update cascade,
 
-        --password varchar(20) not null,
         );
 
     create table Stadium
@@ -59,8 +57,6 @@ CREATE PROCEDURE createAllTables
         references systemUser(username)
         on delete cascade
         on update cascade,
-
-        --stadiumManagerPassword varchar(20) not null,
 
         Stadium_ID int not null
         constraint stadium_SM_fk foreign key(Stadium_ID)
@@ -89,8 +85,6 @@ CREATE PROCEDURE createAllTables
         on delete cascade
         on update cascade,
 
-        --clubRepresentativePassword varchar(20) not null,
-
         club_ID int not null
         constraint Club_CR_fk foreign key(club_ID) 
         references Club(ID)
@@ -112,7 +106,6 @@ CREATE PROCEDURE createAllTables
         references systemUser(username)
         on update cascade
         on delete cascade,
-        --fanPassword VARCHAR(20) NOT NULL,
 
         Status bit not null default 'true'
         );
@@ -206,10 +199,6 @@ CREATE PROCEDURE createAllTables
 
 GO
 
-EXEC createAllTables
-
-GO
-
 CREATE PROCEDURE dropAllTables
     AS 
 
@@ -263,19 +252,12 @@ CREATE PROCEDURE dropAllTables
     DROP TABLE systemAdmin;
 
     DROP TABLE systemUser;
-         
-GO
-drop proc dropAllTables;
-EXEC dropAllTables;
-drop proc createAllTables;
-exec createAllTables;
-
 
 GO
 
 CREATE PROCEDURE clearAllTables
     AS
-    --lazem nsheel kol el foreign key constraints abl ma n-truncate el table
+
     ALTER TABLE ticketBuyingTransaction
     DROP CONSTRAINT buyFanID_fk;
     alter table ticketBuyingTransaction
@@ -332,7 +314,7 @@ CREATE PROCEDURE clearAllTables
 
     TRUNCATE TABLE systemUser;
 
-    --hena baraga3 el constraints 3shan manbawazsh el donya
+
     ALTER TABLE ticketBuyingTransaction ADD
     CONSTRAINT buyFanID_fk FOREIGN KEY(NationaID)
     REFERENCES Fan(NationaID)
@@ -378,13 +360,11 @@ CREATE PROCEDURE clearAllTables
     on update no action
 
     ALTER TABLE Fan ADD
-    CONSTRAINT fan_Inheritence_fk FOREIGN KEY (username)
+    CONSTRAINT fan_inheritence_fk FOREIGN KEY (username)
     REFERENCES systemUser(username)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-     --alter table fan
-     --drop constraint fan_Inheritence_fk;
 
     ALTER TABLE clubRepresentative ADD 
     CONSTRAINT CR_inheretance foreign key (username)
@@ -417,11 +397,6 @@ CREATE PROCEDURE clearAllTables
     references systemUser(username)
     on delete cascade
     on update cascade;
-
-GO
-EXEC clearAllTables
-drop proc clearAllTables
-exec clearAllTables
 
 GO
 
@@ -503,7 +478,6 @@ CREATE VIEW allRequests
 
 GO
 
---END of 2.2
 
 create procedure addAssociationManager 
     @name varchar(20), @username varchar(20), @password varchar(20)
@@ -568,8 +542,7 @@ CREATE PROCEDURE deleteMatchesOnStadium
     select @sID = s.ID
     from Stadium s
     where s.stadiumName = @name;
-    --declare @currDate datetime;
-    --SELECT @currDate = DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
+
     delete 
     from Match 
     where Match.stadium_ID = @sID and Match.startTime >= CURRENT_TIMESTAMP;
@@ -615,7 +588,6 @@ CREATE PROCEDURE addTicket
         set @counter = @counter + 1
         end
     
-
 GO
 
 CREATE PROCEDURE deleteClub
@@ -771,10 +743,7 @@ CREATE PROCEDURE acceptRequest
     select @stadiumID = sm.Stadium_ID
     from stadiumManager sm 
     WHERE sm.ID=@sMID
-    --inner join hostRequest hr on hr.SM_ID = sm.ID
-    --where hr.Match_ID = @matchID ;
     
-
     update Match
     set stadium_ID = @stadiumID
     where Match.ID = @matchID and stadium_ID IS NULL;
@@ -782,7 +751,6 @@ CREATE PROCEDURE acceptRequest
     update hostRequest 
     set Status = 'accepted'
     where hostRequest.Match_ID = @matchID AND SM_ID=@sMID and Status='unhandled';
-
 
 GO
 
@@ -877,9 +845,7 @@ CREATE PROCEDURE updateMatchHost
     update Match set Match.host_ID = @gID where @sTime = Match.startTime
     update Match set Match.guest_ID = @hID where @sTime = Match.startTime
     
-
 GO
-
 
 CREATE VIEW matchesPerTeam
     AS
@@ -899,9 +865,10 @@ CREATE VIEW clubsNeverMatched
     FROM Club c1, Club c2
     WHERE c1.clubName < c2.clubName 
     AND c2.ID NOT IN
-    (SELECT Host_ID FROM Match WHERE guest_ID=c1.ID
+    (SELECT Host_ID FROM Match WHERE guest_ID=c1.ID and Match.startTime > CURRENT_TIMESTAMP
     UNION 
-    SELECT guest_ID FROM Match WHERE c1.ID = HOST_ID)
+    SELECT guest_ID FROM Match WHERE c1.ID = HOST_ID and Match.startTime > CURRENT_TIMESTAMP);
+
 GO
 
 CREATE FUNCTION clubsNeverPlayed 
@@ -930,8 +897,6 @@ CREATE FUNCTION matchWithHighestAttendance
     () RETURNS @P TABLE (hcname VARCHAR(20), gcname VARCHAR(20))
     AS BEGIN
     DECLARE @mID INT
-    --SELECT TOP 1 Match_ID FROM (SELECT t.Match_ID, COUNT(ID) c FROM Ticket t WHERE t.ticketStatus='0' GROUP BY Match_ID ORDER BY c DESC);
-    --HAVING COUNT(t.ID)=(SELECT MAX(ticketcount) FROM (SELECT COUNT(ID) ticketcount FROM Ticket WHERE ticketStatus='0' GROUP BY Match_ID));
     SELECT  @mID=Match_ID FROM Ticket  WHERE ticketStatus='0' GROUP BY Match_ID 
     HAVING  COUNT(ID) =
     (
@@ -1049,132 +1014,4 @@ CREATE PROCEDURE dropAllProceduresFunctionsViews
     DROP FUNCTION requestsFromClub;
 
 GO
-
-execute dropAllProceduresFunctionsViews
-
-
-
-
--- Drop the database 'DatabaseName'
--- Connect to the 'master' database to run this snippet
---USE master
---GO
--- Uncomment the ALTER DATABASE statement below to set the database to SINGLE_USER mode if the drop database command fails because the database is in use.
-ALTER DATABASE ehnaawi SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
----- Drop the database if it exists
-DROP DATABASE ehnaawi
---GO 
---INSERT INTO systemUser 
---VALUES('mayarrbahnacy','mayOoRaElaM0orA'),('zeinaGabAllah','zoZZaElmoZZa'),('farahdawod','tuTiAlpi<3'),('saraayman','iLoVeMycAr'),('naglaafathi','anaOmfaRah'),
---('nourbahnacy','iBelieveinUnicoRns'),('moamenelzayat','anaba7ebFARAH'),('magdyhussein','sha3RelEidREDFLAG'),('zabzoobmota7arek','iMgAy11'),('zhe2t','keFaYakEda')
-
---INSERT INTO systemAdmin VALUES('Farah','farahdawod')
---INSERT INTO sportsAssociationManager VALUES('Sara','saraayman')
---INSERT INTO Stadium(stadiumName,stadiumLocation,Capacity) VALUES ('Borg El Arab','Cairo',86000),('Egyptian Army','Suez',45000),('Rungrado','North Korea',114000),
---('Melbourne Cricket','Australia',100024),('Camp Nou','Spain',99354),('FNB','South Africa',94736),('Rose Bowl','USA',92542),('Wembley','UK',90000),
---('Bukit Jalil','Malaysia',87411),('Estadio Azteca','Mexico',87000)
---INSERT INTO systemUser 
---VALUES('Rui_a','fghvjbk'),('mhussein','fcghv'),('sCock','plmn'),('parSons','etghn'),('vi','barca<3'),('vic','capeTownisMyTown'),
---('JenW','ytpplarecrzy'),('LB','iLoveShakira'),('MoFay','burgjl'),('flex','iAintFlexiN')
---INSERT INTO stadiumManager VALUES ('Rui Águas','Rui_a',1),('Mahmoud Hussein','mhussein',2),('Simon Cockerell','sCock',3),
---('Haydn Parsons','parSons',4),('Xavi','vi',5),('Gert Victor','vic',6),('Jens Weiden','JenW',7),('Liam Boylan','LB',8),
---('Mohd Faidz Sanusi','MoFay',9),('Felix Aguirre','flex',10)
---SELECT* FROM allAssocManagers
---SELECT* FROM allClubRepresentatives
-
---MOCK DB
-    SELECT * FROM allFans
-    exec addClub 'Barcelona', 'Spain';
-    exec addClub 'Real Madrid', 'Spain';
-    exec addClub 'Liverpool' , 'England';
-    exec addClub 'Atletico Madrid', 'Spain';
-    exec addClub 'Bayern Munich', 'Germany';
-    exec addClub 'Inter Milan', 'Italy';
-    exec addClub 'Tottenham', 'England';
-    exec addClub 'Manchester City', 'England';
-    exec addClub 'Manchester United', 'England';
-    exec addClub 'Juventus', 'Italy';
-
-    select * from clubsWithNoMatches;
-    select * from allCLubs;
-
-    exec deleteClub 'Juventus';
-    select * from allCLubs;
-    EXEC addAssociationManager 'Farah Daoud', 'farouhaalo','tutialpino1'
-    exec addRepresentative 'Zeina Gaballah', 'Atletico Madrid', 'zeinaGaballah', '123456';
-    exec addRepresentative 'Sara Wasfy', 'Tottenham', 'sarawasfy', '123456';
-    exec addRepresentative 'Christiano Ronaldo', 'Real Madrid', 'ronaldo7', 'CR7';
-
-    select * from allClubRepresentatives;
-
-    exec addStadium 'Camp Nou', 'Spain', 99354;
-    exec addStadium 'Santiago Bernabeu', 'Spain', 81044;
-    exec addStadium 'Borg El Arab', 'Egypt', 50400;
-    exec deleteStadium 'Borg El Arab';
-
-    select * from allStadiums;
-    exec addNewMatch 'Atletico Madrid' , 'Barcelona', '2022-07-21 07:00', '2022-07-21 09:45';
-    exec addNewMatch 'Atletico Madrid', 'Liverpool', '2022-08-10 05:00', '2022-08-10 07:25';
-    exec addNewMatch 'Real Madrid', 'Manchester City', '2022-12-25 09:00', '2022-12-25 11:00';
-    exec addNewMatch 'Bayern Munich', 'Liverpool', '2022-11-1 04:00', '2022-11-1 06:30';
-    exec addNewMatch 'Real Madrid', 'Liverpool', '2022-02-21 10:00', '2022-02-22 12:00';
-    exec addNewMatch 'Tottenham', 'Inter Milan', '2022-03-08 10:00', '2022-03-09 12:15';
-    EXEC addNewMatch 'Barcelona', 'Manchester United', '2022-03-19 05:15','2022-03-19 07:30';
-    EXEC updateMatchHost 'Bayern Munich', 'Liverpool', '2022-11-1 04:00'
-
-    SELECT * From allMatches;
-
-    exec addStadiumManager 'Farah Dawod', 'Camp Nou', 'farouha', 'playes';
-    exec addStadiumManager 'Mayar Bahnacy', 'Santiago Bernabeu', 'mayora', '123456';
-    exec addStadiumManager 'Magdy', 'Borg El Arab', 'magdy', 'notBi';
-
-    select * from allStadiumManagers;
-    select * from allClubRepresentatives;
-    select * from systemUser;
-
-    exec addHostRequest 'Tottenham', 'Camp Nou', '2022-03-08 10:00';
-    exec addHostRequest 'Atletico Madrid', 'Camp Nou', '2022-07-21 07:00';
-    exec addHostRequest 'Atletico Madrid', 'Santiago Bernabeu', '2022-08-10 05:00:00.000';
-    exec addHostRequest 'Real Madrid', 'Borg El Arab', '2022-12-25 09:00';
-    exec addHostRequest 'Real Madrid', 'Santiago Bernabeu', '2022-12-25 09:00';
-
-    select * from allClubRepresentatives;
-    select * from stadiumManager;
-    select * from allRequests;
-    select * from allMatches;
-    SELECT * FROM Stadium;
-    select * from dbo.viewAvailableStadiumsOn ('2022-03-08 10:00')
-    select * from dbo.allUnassignedMatches('Tottenham');
-    select * from dbo.allPendingRequests('farouha');
-
-    exec acceptRequest 'magdy', 'Real Madrid', 'Manchester City', '2022-12-25 09:00';
-    exec acceptRequest 'farouha', 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
-    EXEC rejectRequest 'farouha', 'Tottenham', 'Inter Milan', '2022-03-08 10:00'
-
-    exec addTicket 'Atletico Madrid', 'Barcelona', '2022-07-21 07:00:00.000';
-    exec addTicket 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
-
-    exec deleteMatch 'Real Madrid', 'Liverpool';
-
-    exec deleteMatchesOnStadium 'Borg El Arab';
-    select * from allMatches;
-    
-    select * from dbo.upcomingMatchesOfClub('Manchester City');
-
-    exec addFan 'Ahmed Mohsen', 'mohsenjr', 'production.com', '30108112112304', '2001-08-11', 'Ain Shams', 01000498966;
-    exec addFan 'Mohamed Abdel Azim', '3b3z' , 'quack', '30108270456898', '2001-08-27', 'October', 01121267129;
-    exec addFan 'Farah Dawod', 'farohaAgain', ' 123456', '3030319141962', '2003-03-19', 'Mansoura', 01095772840;
-    select * from allFans;
-    exec blockFan '3030319141962';
-    exec purchaseTicket '3030319141962', 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
-    exec unblockFan '3030319141962';
-    select * from fan;
-    select * from match;
-
-    select * from dbo.availableMatchesToAttend('2022-12-25 09:00:00.000');
-    exec addTicket 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
-    exec purchaseTicket '30108270456898', 'Tottenham', 'Inter Milan', '2022-03-08 10:00:00.000';
-    exec purchaseTicket '30108270456898', 'Real Madrid', 'Manchester City', '2022-12-25 09:00:00.000';
-   
-
 
