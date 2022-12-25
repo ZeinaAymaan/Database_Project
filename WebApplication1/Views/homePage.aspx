@@ -18,16 +18,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsSportsAss">Register As Sports Associaton Manager</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsSportsAss">Sports Associaton Manager Registeration</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsClubRep">Register As Club Representative</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsClubRep">Club Representative Registeration</a>
                         </li>
                         <li class="navbar-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsStadMan">Register As Stadium Manager</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsStadMan">Stadium Manager Registeration</a>
                         </li>
                         <li class="navbar-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsFan">Register As Fan</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsFan">Fan Registeration</a>
                         </li>
                     </ul>
                 </div>
