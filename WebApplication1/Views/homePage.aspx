@@ -4,13 +4,17 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/db_proje.styles.css" asp-append-version="true" />
 </head>
 <body style="height: 350px">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="homePage" asp-action="">Home Page</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="">Home Page</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -18,15 +22,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/homePage/RegisterAsSportsAss">Sports Associaton Manager Regestration</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsSportsAss">Sports Associaton Manager Registeration</a>
+                        </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/homePage/RegisterAsClubRep">Club Representative Regestration</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsClubRep">Club Representative Registeration</a>
                         </li>
                         <li class="navbar-item">
-                            <a class="nav-link text-dark" href="/homePage/RegisterAsStadMan">Stadium Manager Regestration</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsStadMan">Stadium Manager Registeration</a>
                         </li>
                         <li class="navbar-item">
-                            <a class="nav-link text-dark" href="/homePage/RegisterAsFan">Fan Regestration</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsFan">Fan Registeration</a>
                         </li>
                     </ul>
                 </div>
