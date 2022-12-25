@@ -21,18 +21,18 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsSportsAss">Sports Associaton Manager Registeration</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsClubRep">Club Representative Registeration</a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsStadMan">Stadium Manager Registeration</a>
-                        </li>
-                        <li class="navbar-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="homePage" asp-action="RegisterAsFan">Fan Registeration</a>
-                        </li>
+                        <div class="nav-item">
+                            <button class="nav-link text-dark" href="/homePage/RegisterAsSportsAssoc">Sports Associaton Manager Registeration</button>
+                        </div>
+                        <div class="nav-item">
+                            <button class="nav-link text-dark" href="/homePage/RegisterAsClubRep">Club Representative Registeration</button>
+                        </div>
+                        <div class="navbar-item">
+                            <button class="nav-link text-dark" href="/homePage/RegisterAsStadMan">Stadium Manager Registeration</button>
+                        </div>
+                        <div class="navbar-item">
+                            <button class="nav-link text-dark" href="/homePage/RegisterAsFan">Fan Registeration</button>
+                        </div>
                     </ul>
                 </div>
             </div>
