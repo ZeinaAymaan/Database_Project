@@ -96,37 +96,65 @@ namespace WebApplication1.Views
             if (usernameReader == "") MessageBox.Show("username or password doesn't exist");
             else
             {
+                
                 SqlDataReader systemAdminReader = systemAdminCMD.ExecuteReader();
                 while (systemAdminReader.Read())
                 {
                     if (usernameReader == systemAdminReader["systemAdminUsername"].ToString())
                     {
                         MessageBox.Show("system admin");
+                        return;
                         
                     }
                 }
                 systemAdminReader.Close();
 
                 SqlDataReader sportsAssociationManagerReader = sportsAssociationManagerCMD.ExecuteReader();
-                sportsAssociationManagerReader.Read();
-                if (usernameReader == sportsAssociationManagerReader["sportsAssociationManagerUsername"].ToString()) MessageBox.Show("sports association manager");
+                while (sportsAssociationManagerReader.Read())
+                {
+                    if (usernameReader == sportsAssociationManagerReader["sportsAssociationManagerUsername"].ToString())
+                    {
+                        MessageBox.Show("sports association manager");
+                        return ;
+                    }
+                }
                 sportsAssociationManagerReader.Close();
 
                 SqlDataReader stadiumManagerReader = stadiumManagerCMD.ExecuteReader();
-                stadiumManagerReader.Read();
-                if (usernameReader == stadiumManagerReader["stadiumManagerUsername"].ToString()) MessageBox.Show("stadium manager");
+                while (stadiumManagerReader.Read())
+                {
+                    if (usernameReader == stadiumManagerReader["stadiumManagerUsername"].ToString())
+                    {
+                        MessageBox.Show("stadium manager");
+                        return;
+                    }
+                }
                 stadiumManagerReader.Close();
 
                 SqlDataReader clubRepresentativeReader = clubRepresentativeCMD.ExecuteReader();
-                clubRepresentativeReader.Read();
-                if (usernameReader == clubRepresentativeReader["Username"].ToString()) MessageBox.Show("club representative");
+                while (clubRepresentativeReader.Read())
+                {
+                    if (usernameReader == clubRepresentativeReader["Username"].ToString())
+                    {
+                        MessageBox.Show("club representative");
+                        return;
+                    }
+
+                }
                 clubRepresentativeReader.Close();
 
                 SqlDataReader fanReader = fanCMD.ExecuteReader();
-                fanReader.Read();
-                if (usernameReader == fanReader["username"].ToString()) MessageBox.Show("fan");
+                while (fanReader.Read())
+                {
+                    if (usernameReader == fanReader["username"].ToString())
+                    {
+                        MessageBox.Show("fan");
+                        return;
+                    }
+
+                }
                 fanReader.Close();
-            }
+            }   
 
         }
     }
