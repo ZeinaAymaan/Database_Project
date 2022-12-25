@@ -19,7 +19,7 @@
         <p>
             <asp:Button ID="AddClubButton" runat="server" OnClick="AddClubButton_Click" Text="ADD" />
 &nbsp;
-            <asp:Button ID="DeleteClubButton" runat="server" Text="DELETE" />
+            <asp:Button ID="DeleteClubButton" runat="server" OnClick="DeleteClubButton_Click" Text="DELETE" />
         </p>
         <p>
             &nbsp;</p>
@@ -38,7 +38,7 @@
             <asp:TextBox ID="StadiumCapacityTextBox" runat="server"></asp:TextBox>
         </p>
         <p>
-            <asp:Button ID="AddStadiumButton" runat="server" Text="ADD" />
+            <asp:Button ID="AddStadiumButton" runat="server" OnClick="AddStadiumButton_Click" Text="ADD" />
 &nbsp;
             <asp:Button ID="DeleteStadiumButton" runat="server" Text="DELETE" />
         </p>
