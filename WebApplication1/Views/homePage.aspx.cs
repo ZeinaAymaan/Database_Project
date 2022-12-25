@@ -159,7 +159,22 @@ namespace WebApplication1.Views
             }   
 
         }
-
+        public IActionResult RegisterAsSportsAss()
+        {
+            return View();
+        }
+        public IActionResult RegisterAsClubRep()
+        {
+            return View();
+        }
+        public IActionResult RegisterAsStadMan()
+        {
+            return View();
+        }
+        public IActionResult RegisterAsFan()
+        {
+            return View();
+        }
 
     }
 }
