@@ -96,7 +96,6 @@ namespace WebApplication1.Views
             if (usernameReader == "") MessageBox.Show("username or password doesn't exist");
             else
             {
-                
                 SqlDataReader systemAdminReader = systemAdminCMD.ExecuteReader();
                 while (systemAdminReader.Read())
                 {

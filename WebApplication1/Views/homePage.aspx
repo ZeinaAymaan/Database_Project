@@ -6,7 +6,7 @@
 <head runat="server">
     <title></title>
 </head>
-<body>
+<body style="height: 350px">
     <form id="form1" runat="server">
         <div>
             <asp:Label ID="UsernameLabel" runat="server" Text="Username"></asp:Label>
@@ -20,7 +20,20 @@
             <br />
             <br />
             <asp:Button ID="LoginButton" runat="server" OnClick="LoginButton_Click" Text="Login" />
-            <asp:Button ID="RegisterButton" runat="server" Text="Register" />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <asp:Button ID="RegisterSportsAssociationManagerButton" runat="server" Text="Register Sports Association Manager" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <asp:Button ID="RegisterClubRepresentativeButton" runat="server" style="text-align: right" Text="Register Club Representative" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <br />
+            <br />
+            <asp:Button ID="RegisterStadiumManagerButton" runat="server" Height="27px" Text="Register Stadium Manager" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <asp:Button ID="RegisterFanButton" runat="server" Text="Register Fan" />
         </div>
     </form>
 </body>
