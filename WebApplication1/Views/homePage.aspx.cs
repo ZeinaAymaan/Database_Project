@@ -8,8 +8,11 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
 
+
+
 namespace WebApplication1.Views
 {
+
     class db
     {
         public static SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ehnaawi;Integrated Security=True");
@@ -156,5 +159,7 @@ namespace WebApplication1.Views
             }   
 
         }
+
+
     }
 }
