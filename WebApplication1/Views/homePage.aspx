@@ -8,7 +8,8 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
+        <div> class="text-center">
+            <h1 class="display-4">Welcome To The Golden Square</h1>
             <asp:Label ID="UsernameLabel" runat="server" Text="Username"></asp:Label>
             <br />
             <asp:TextBox ID="UsernameTextBox" runat="server"></asp:TextBox>
