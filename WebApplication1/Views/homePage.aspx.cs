@@ -67,6 +67,12 @@ namespace WebApplication1.Views
             string username = UsernameTextBox.Text;
             string password = PasswordTextBox.Text;
 
+            if (username == "" || password == "")
+            {
+                MessageBox.Show("username or password fields are empty");
+                return;
+            }
+
             string loginQuery = "select su.username, su.systemUserPassword\r\nfrom systemUser su\r\nwhere username = '" + username + "' and systemUserPassword = '" + password + "';";
             string systemAdminLogin = "select sa.systemAdminUsername\r\nfrom systemAdmin sa\r\nwhere sa.systemAdminUsername = '"+ username +"';";
             string sportsAssocitionManagerLogin = "select sam.sportsAssociationManagerUsername\r\nfrom sportsAssociationManager sam\r\nwhere sam.sportsAssociationManagerUsername = '"+ username +"';";
@@ -92,10 +98,6 @@ namespace WebApplication1.Views
 
             loginReader.Close();
 
-
-            //ig it's easier done with cases
-            //they all need while loops
-
             if (usernameReader == "") MessageBox.Show("username or password doesn't exist");
             else
             {
@@ -105,6 +107,7 @@ namespace WebApplication1.Views
                     if (usernameReader == systemAdminReader["systemAdminUsername"].ToString())
                     {
                         MessageBox.Show("system admin");
+                        systemAdminReader.Close();
                         return;
                         
                     }
@@ -117,7 +120,8 @@ namespace WebApplication1.Views
                     if (usernameReader == sportsAssociationManagerReader["sportsAssociationManagerUsername"].ToString())
                     {
                         MessageBox.Show("sports association manager");
-                        return ;
+                        sportsAssociationManagerReader.Close();
+                        return;
                     }
                 }
                 sportsAssociationManagerReader.Close();
@@ -128,6 +132,7 @@ namespace WebApplication1.Views
                     if (usernameReader == stadiumManagerReader["stadiumManagerUsername"].ToString())
                     {
                         MessageBox.Show("stadium manager");
+                        stadiumManagerReader.Close();
                         return;
                     }
                 }
@@ -139,6 +144,7 @@ namespace WebApplication1.Views
                     if (usernameReader == clubRepresentativeReader["Username"].ToString())
                     {
                         MessageBox.Show("club representative");
+                        clubRepresentativeReader.Close();
                         return;
                     }
 
@@ -151,30 +157,44 @@ namespace WebApplication1.Views
                     if (usernameReader == fanReader["username"].ToString())
                     {
                         MessageBox.Show("fan");
+                        fanReader.Close();
                         return;
                     }
 
                 }
                 fanReader.Close();
-            }   
+            }
+            
+
 
         }
-        public IActionResult RegisterAsSportsAss()
+
+        protected void RegisterSportsAssociationManagerButton_Click(object sender, EventArgs e)
         {
-            return View();
+
         }
-        public IActionResult RegisterAsClubRep()
+
+
+        protected void button1_Click(object sender, EventArgs e)
         {
-            return View();
+            MessageBox.Show("it's working");
         }
-        public IActionResult RegisterAsStadMan()
-        {
-            return View();
-        }
-        public IActionResult RegisterAsFan()
-        {
-            return View();
-        }
+        //public IActionResult RegisterAsSportsAss()
+        //{
+        //    return View();
+        //}
+        //public IActionResult RegisterAsClubRep()
+        //{
+        //    return View();
+        //}
+        //public IActionResult RegisterAsStadMan()
+        //{
+        //    return View();
+        //}
+        //public IActionResult RegisterAsFan()
+        //{
+        //    return View();
+        //}
 
     }
 }
