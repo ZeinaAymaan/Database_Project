@@ -33,7 +33,7 @@
             <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="SqlDataSource1" DataTextField="Name" DataValueField="Name" AppendDataBoundItems="True" Height="24px">
                 <asp:ListItem Text ="Select"></asp:ListItem>
             </asp:DropDownList>
-            <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ehnaawiConnectionString %>" SelectCommand="SELECT [Name] FROM [allCLubs]"></asp:SqlDataSource>
+            <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ehnaawiConnectionString %>" SelectCommand="SELECT c1.clubName AS Host, c2.clubName AS Guest, m.startTime, m.endTime FROM Match AS m INNER JOIN Club AS c1 ON m.Host_ID = c1.ID LEFT OUTER JOIN Club AS c2 ON c2.ID = m.guest_ID WHERE (m.startTime &gt; CURRENT_TIMESTAMP) AND (m.stadium_ID IS NOT NULL)"></asp:SqlDataSource>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <asp:DropDownList ID="DropDownList2" runat="server" DataSourceID="SqlDataSource1" DataTextField="Name" DataValueField="Name" Height="24px" AppendDataBoundItems="True">
                 <asp:ListItem Text ="Select"></asp:ListItem>
@@ -92,6 +92,21 @@
             <asp:Button ID="AddSAMButton" runat="server" Text="ADD" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <asp:Button ID="DeleteSAMButton" runat="server" Text="DELETE" />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <asp:Button ID="UpcomingMatchesButton" runat="server" OnClick="UpcomingMatchesButton_Click" Text="View all upcoming matches" />
+            <br />
+            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1">
+                <Columns>
+                    <asp:BoundField DataField="Host" HeaderText="Host" SortExpression="Host" />
+                    <asp:BoundField DataField="Guest" HeaderText="Guest" SortExpression="Guest" />
+                    <asp:BoundField DataField="startTime" HeaderText="startTime" SortExpression="startTime" />
+                    <asp:BoundField DataField="endTime" HeaderText="endTime" SortExpression="endTime" />
+                </Columns>
+            </asp:GridView>
             <br />
         </div>
     </form>
