@@ -96,13 +96,22 @@ namespace WebApplication1.Views
         protected global::System.Web.UI.WebControls.TextBox PasswordSMTextBox;
 
         /// <summary>
-        /// StadiumNameSMTextBox control.
+        /// StadiumNameDropDownList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox StadiumNameSMTextBox;
+        protected global::System.Web.UI.WebControls.DropDownList StadiumNameDropDownList;
+
+        /// <summary>
+        /// SqlDataSource1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSource1;
 
         /// <summary>
         /// RegisterSMButton control.

@@ -49,6 +49,13 @@ namespace WebApplication1.Views
                 checkMatchExistsReader.Close();
                 return;
             }
+            db.openConnection();
+            for(int i = 00; i < 60; i++)
+            {
+                ListItem minutes = new ListItem("" + i);
+                SMinutsDropDownList.Items.Add(minutes);
+                EMinutesDropDownList.Items.Add(minutes);
+            }
 
             checkMatchExistsReader.Close();
             string addMatchQuery = "exec addMatch '" + HostClubName + "', '" + GuestClubName + "', '" + StartTime + "', '" + EndTime + "';";
@@ -91,6 +98,12 @@ namespace WebApplication1.Views
             SqlDataReader deleteMatchReader = deleteMatchCMD.ExecuteReader();
             deleteMatchReader.Close();
             MessageBox.Show("Match deleted successfully");
+            for (int i = 00; i < 24; i++)
+            {
+                ListItem hours = new ListItem("" + i);
+                SHoursDropDownList.Items.Add(hours);
+                EHoursDropDownList.Items.Add(hours);
+            }
         }
     }
 }
