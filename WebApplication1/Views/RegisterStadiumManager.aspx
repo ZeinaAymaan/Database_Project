@@ -37,7 +37,10 @@
 &nbsp;&nbsp;
             <asp:TextBox ID="PasswordSMTextBox" runat="server"></asp:TextBox>
 &nbsp;
-            <asp:TextBox ID="StadiumNameSMTextBox" runat="server"></asp:TextBox>
+            <asp:DropDownList ID="StadiumNameDropDownList" runat="server" DataSourceID="SqlDataSource1" DataTextField="stadiumName" DataValueField="stadiumName" AppendDataBoundItems="True">
+                    <asp:ListItem Text ="Select"></asp:ListItem>
+            </asp:DropDownList>
+            <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ehnaawiConnectionString %>" SelectCommand="SELECT s.stadiumName FROM Stadium AS s LEFT OUTER JOIN stadiumManager AS sm ON s.ID = sm.Stadium_ID WHERE (sm.Stadium_ID IS NULL)"></asp:SqlDataSource>
             <br />
             <asp:Button ID="RegisterSMButton" runat="server" OnClick="RegisterSMButton_Click" Text="Register" />
         </div>

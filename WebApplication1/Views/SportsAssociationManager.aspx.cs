@@ -11,7 +11,20 @@ namespace WebApplication1.Views
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            db.openConnection();
+            for(int i = 00; i < 60; i++)
+            {
+                ListItem minutes = new ListItem("" + i);
+                SMinutsDropDownList.Items.Add(minutes);
+                EMinutesDropDownList.Items.Add(minutes);
+            }
 
+            for (int i = 00; i < 24; i++)
+            {
+                ListItem hours = new ListItem("" + i);
+                SHoursDropDownList.Items.Add(hours);
+                EHoursDropDownList.Items.Add(hours);
+            }
         }
     }
 }

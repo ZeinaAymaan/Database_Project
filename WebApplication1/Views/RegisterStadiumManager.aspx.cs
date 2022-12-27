@@ -21,7 +21,7 @@ namespace WebApplication1.Views
             string Name = NameSMTextBox.Text;
             string Username = UsernameSMTextBox.Text;
             string Password = PasswordSMTextBox.Text;
-            string stadiumName = StadiumNameSMTextBox.Text;
+            string stadiumName = StadiumNameDropDownList.Text;
 
             if (stadiumName == "" || Password == "" || Username == "" || Name == "")
             {
@@ -46,17 +46,21 @@ namespace WebApplication1.Views
             }
             checkUsernameValidReader.Close();
 
-            string checkStadiumExistsQuery = "select StadiumName \r\nfrom Stadium\r\nwhere StadiumName = '" + stadiumName + "';";
-            SqlCommand checkStadiumExistsCMD = new SqlCommand(checkStadiumExistsQuery, db.con);
-            SqlDataReader checkStadiumExistsReader = checkStadiumExistsCMD.ExecuteReader();
-            while (!checkStadiumExistsReader.Read())
+            string checkStadiumWithoutRepresentative = "SELECT c.StadiumName, cr.Stadium_ID FROM Stadium AS c LEFT OUTER JOIN StadiumRepresentative AS cr ON c.ID = cr.Stadium_ID WHERE (cr.Stadium_ID IS NULL)";
+            SqlCommand checkStadiumWithoutRepresentativeCMD = new SqlCommand(checkStadiumWithoutRepresentative, db.con);
+            SqlDataReader checkStadiumWithoutRepresentativeReader = checkStadiumWithoutRepresentativeCMD.ExecuteReader();
+            bool flag = false;
+            while (checkStadiumWithoutRepresentativeReader.Read())
             {
-                MessageBox.Show("Stadium doesn't exists");
-                checkStadiumExistsReader.Close();
+                if (stadiumName == checkStadiumWithoutRepresentativeReader["StadiumName"].ToString()) flag = true;
+            }
+            checkStadiumWithoutRepresentativeReader.Close();
+            if (!flag)
+            {
+                MessageBox.Show("Stadium already has a Manager");
                 return;
             }
 
-            checkStadiumExistsReader.Close();
             string addStadiumManagerQuery = "exec addStadiumManager '" + Name + "', '" + stadiumName + "', '" + Username + "', '" + Password + "'";
             SqlCommand addStadiumManagerCMD = new SqlCommand(addStadiumManagerQuery, db.con);
             SqlDataReader addStadiumManagerReader = addStadiumManagerCMD.ExecuteReader();
