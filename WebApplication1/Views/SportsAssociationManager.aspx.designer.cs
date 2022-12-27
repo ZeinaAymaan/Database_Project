@@ -11,7 +11,7 @@ namespace WebApplication1.Views
 {
 
 
-    public partial class WebForm5
+    public partial class WebForm7
     {
 
         /// <summary>
@@ -33,13 +33,13 @@ namespace WebApplication1.Views
         protected global::System.Web.UI.WebControls.Menu Menu1;
 
         /// <summary>
-        /// Label1 control.
+        /// HostClubNameSAMLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Label HostClubNameSAMLabel;
 
         /// <summary>
         /// Label2 control.
@@ -69,48 +69,66 @@ namespace WebApplication1.Views
         protected global::System.Web.UI.WebControls.Label Label4;
 
         /// <summary>
-        /// NameSMTextBox control.
+        /// DropDownList1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox NameSMTextBox;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList1;
 
         /// <summary>
-        /// UsernameSMTextBox control.
+        /// SqlDataSource1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox UsernameSMTextBox;
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSource1;
 
         /// <summary>
-        /// PasswordSMTextBox control.
+        /// DropDownList2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox PasswordSMTextBox;
+        protected global::System.Web.UI.WebControls.DropDownList DropDownList2;
 
         /// <summary>
-        /// StadiumNameSMTextBox control.
+        /// StartTimeSAMTextBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox StadiumNameSMTextBox;
+        protected global::System.Web.UI.WebControls.TextBox StartTimeSAMTextBox;
 
         /// <summary>
-        /// RegisterSMButton control.
+        /// EndTimeSAMTextBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button RegisterSMButton;
+        protected global::System.Web.UI.WebControls.TextBox EndTimeSAMTextBox;
+
+        /// <summary>
+        /// AddSAMButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button AddSAMButton;
+
+        /// <summary>
+        /// DeleteSAMButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button DeleteSAMButton;
     }
 }

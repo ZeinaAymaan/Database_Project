@@ -24,13 +24,13 @@ namespace WebApplication1.Views
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// HomePageCRButton control.
+        /// Menu1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button HomePageCRButton;
+        protected global::System.Web.UI.WebControls.Menu Menu1;
 
         /// <summary>
         /// NameLabel control.
@@ -96,13 +96,22 @@ namespace WebApplication1.Views
         protected global::System.Web.UI.WebControls.TextBox PasswordCRTextBox;
 
         /// <summary>
-        /// ClubNameCRTextBox control.
+        /// ClubNameDropDownList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox ClubNameCRTextBox;
+        protected global::System.Web.UI.WebControls.DropDownList ClubNameDropDownList;
+
+        /// <summary>
+        /// SqlDataSource1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSource1;
 
         /// <summary>
         /// RegisterCRButton control.

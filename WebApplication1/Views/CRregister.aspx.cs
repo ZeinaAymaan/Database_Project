@@ -22,17 +22,17 @@ namespace WebApplication1.Views
             string Name = NameCRTextBox.Text;
             string Username = UsernameCRTextBox.Text;
             string Password = PasswordCRTextBox.Text;
-            string ClubName = ClubNameCRTextBox.Text;
+            string ClubName = ClubNameDropDownList.Text;
 
-            if (ClubName == "" || Password == "" || Username == "" || Name == "")
+            if (Password == "" || Username == "" || Name == "" || ClubName == "Select")
             {
                 MessageBox.Show("Name, Username, Password, Club Name fields can't be empty");
                 return;
             }
 
-            if (Name.Length > 20 || Username.Length > 20 || Password.Length > 20 || ClubName.Length > 20)
+            if (Name.Length > 20 || Username.Length > 20 || Password.Length > 20)
             {
-                MessageBox.Show("Name, Username, Password, and Club Name can't be more than 20 charactars");
+                MessageBox.Show("Name, Username, and Password can't be more than 20 charactars");
                 return;
             }
 
@@ -47,21 +47,25 @@ namespace WebApplication1.Views
             }
             checkUsernameValidReader.Close();
 
-            string checkClubExistsQuery = "select clubName \r\nfrom Club\r\nwhere clubName = '" + ClubName + "';";
-            SqlCommand checkClubExistsCMD = new SqlCommand(checkClubExistsQuery, db.con);
-            SqlDataReader checkClubExistsReader = checkClubExistsCMD.ExecuteReader();
-            while (!checkClubExistsReader.Read())
+            string checkClubWithoutRepresentative = "SELECT c.clubName, cr.club_ID FROM Club AS c LEFT OUTER JOIN clubRepresentative AS cr ON c.ID = cr.club_ID WHERE (cr.club_ID IS NULL)";
+            SqlCommand checkClubWithoutRepresentativeCMD = new SqlCommand(checkClubWithoutRepresentative, db.con);
+            SqlDataReader checkClubWithoutRepresentativeReader = checkClubWithoutRepresentativeCMD.ExecuteReader();
+            bool flag = false;
+            while (checkClubWithoutRepresentativeReader.Read())
             {
-                MessageBox.Show("Club doesn't exists");
-                checkClubExistsReader.Close();
+                if(ClubName == checkClubWithoutRepresentativeReader["clubName"].ToString()) flag = true;
+            }
+            checkClubWithoutRepresentativeReader.Close();
+            if (!flag)
+            {
+                MessageBox.Show("Club already has a Representative");
                 return;
             }
 
-            checkClubExistsReader.Close();
-            string addClubQuery = "exec addRepresentative '"+ Name +"', '"+ ClubName +"', '"+ Username +"', '"+ Password +"'";
-            SqlCommand addClubCMD = new SqlCommand(addClubQuery, db.con);
-            SqlDataReader addClubReader = addClubCMD.ExecuteReader();
-            addClubReader.Close();
+            string addClubRepresentativeQuery = "exec addRepresentative '"+ Name +"', '"+ ClubName +"', '"+ Username +"', '"+ Password +"'";
+            SqlCommand addClubRepresentativeCMD = new SqlCommand(addClubRepresentativeQuery, db.con);
+            SqlDataReader addClubRepresentativeReader = addClubRepresentativeCMD.ExecuteReader();
+            addClubRepresentativeReader.Close();
             MessageBox.Show("Club Representative added successfully");
         }
     }
