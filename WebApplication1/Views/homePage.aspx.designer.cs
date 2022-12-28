@@ -48,7 +48,7 @@ namespace WebApplication1.Views
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox UsernameTextBox;
+        public global::System.Web.UI.WebControls.TextBox UsernameTextBox;
 
         /// <summary>
         /// PasswordLabel control.
