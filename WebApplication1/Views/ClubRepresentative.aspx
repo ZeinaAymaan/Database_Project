@@ -8,9 +8,6 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <br />
-        <br />
-        <!<asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ehnaawiConnectionString %>" SelectCommand="SELECT c.ID, c.clubName, c.clubLocation FROM Club AS c INNER JOIN clubRepresentative AS cr ON cr.club_ID = c.ID "></asp:SqlDataSource>
         Club ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Label ID="Label1" runat="server"></asp:Label>
         <br />
@@ -19,6 +16,15 @@
         <br />
         Club Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Label ID="Label3" runat="server" ></asp:Label>
+        <asp:MultiView ID="MultiView1" runat="server" >
+            <asp:View ID="View1" runat="server">
+                <br />
+                <br />
+                <asp:Label ID="Label4" runat="server"></asp:Label>
+                <asp:GridView ID="GridView1" runat="server">
+                </asp:GridView>
+            </asp:View>
+        </asp:MultiView>
     </form>
 </body>
 </html>
