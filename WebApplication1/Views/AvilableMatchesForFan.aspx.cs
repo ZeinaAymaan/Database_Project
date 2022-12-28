@@ -73,7 +73,15 @@ namespace WebApplication1.Views
             //no of tickets
             //buy it
 
-
+            string nationaID = "";
+            string nationalIDquery = "select [National ID]\r\nfrom allFans \r\nwhere Username = '"+ WebForm1.usernamee +"'";
+            SqlCommand nationaIDCMD = new SqlCommand(nationalIDquery, db.con);
+            SqlDataReader nationaIDReader = nationaIDCMD.ExecuteReader();
+            while (nationaIDReader.Read())
+            {
+                nationaID = nationaIDReader["National ID"].ToString();
+            }
+            nationaIDReader.Close();
 
 
 
