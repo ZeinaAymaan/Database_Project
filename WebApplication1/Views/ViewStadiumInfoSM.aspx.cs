@@ -11,7 +11,7 @@ namespace WebApplication1.Views
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            SqlDataSource1.SelectCommand = "SELECT Stadium.stadiumName, Stadium.stadiumLocation, Stadium.Capacity FROM Stadium INNER JOIN stadiumManager ON Stadium.ID = stadiumManager.Stadium_ID AND stadiumManager.stadiumManagerName = "+;
+            SqlDataSource1.SelectCommand = "SELECT Stadium.stadiumName, Stadium.stadiumLocation, Stadium.Capacity FROM Stadium INNER JOIN stadiumManager ON Stadium.ID = stadiumManager.Stadium_ID AND stadiumManager.stadiumManagerName = ";
 
         }
     }
