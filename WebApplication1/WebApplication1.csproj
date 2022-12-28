@@ -186,9 +186,6 @@
     <Content Include="Views\ClubsNeverMatched.aspx" />
     <Content Include="Views\CRregister.aspx" />
     <Content Include="Views\Fan.aspx" />
-    <Content Include="Views\ClubRepresentative.aspx" />
-    <Content Include="Views\CRregister.aspx" />
-    <Content Include="Views\Fan.aspx" />
     <Content Include="Views\homePage.aspx" />
     <Content Include="Views\PLayedMatches.aspx" />
     <Content Include="Views\RegisterFan.aspx" />
@@ -196,24 +193,8 @@
     <Content Include="Views\SAMregisteration.aspx" />
     <Content Include="Views\SportsAssociationManager.aspx" />
     <Content Include="Views\StadiumManager.aspx" />
-    <Content Include="Views\RegisterFan.aspx" />
-    <Content Include="Views\RegisterStadiumManager.aspx" />
-    <Content Include="Views\SAMregisteration.aspx" />
-    <Content Include="Views\SportsAssociationManager.aspx" />
-    <Content Include="Views\StadiumManager.aspx" />
     <Content Include="Views\SystemAdmin.aspx" />
-    <Content Include="Views\SAMregisteration.aspx" />
-    <Content Include="Views\CRregister.aspx" />
-    <Content Include="Views\RegisterStadiumManager.aspx" />
-    <Content Include="Views\RegisterFan.aspx" />
-    <Content Include="Views\SportsAssociationManager.aspx" />
-    <Content Include="Views\ClubRepresentative.aspx" />
-    <Content Include="Views\StadiumManager.aspx" />
-    <Content Include="Views\Fan.aspx" />
     <Content Include="Views\UpcomingMatches.aspx" />
-    <Content Include="Views\PLayedMatches.aspx" />
-    <Content Include="Views\ClubsNeverMatched.aspx" />
-    <Content Include="Views\AvilableMatchesForFan.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
     <Content Include="Site.Mobile.Master" />
@@ -303,27 +284,6 @@
     <Compile Include="Views\Fan.aspx.designer.cs">
       <DependentUpon>Fan.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\ClubRepresentative.aspx.cs">
-      <DependentUpon>ClubRepresentative.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\ClubRepresentative.aspx.designer.cs">
-      <DependentUpon>ClubRepresentative.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\CRregister.aspx.cs">
-      <DependentUpon>CRregister.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\CRregister.aspx.designer.cs">
-      <DependentUpon>CRregister.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fan.aspx.cs">
-      <DependentUpon>Fan.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\Fan.aspx.designer.cs">
-      <DependentUpon>Fan.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Views\homePage.aspx.cs">
       <DependentUpon>homePage.aspx</DependentUpon>
     </Compile>
@@ -372,131 +332,12 @@
     <Compile Include="Views\StadiumManager.aspx.designer.cs">
       <DependentUpon>StadiumManager.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\RegisterFan.aspx.cs">
-      <DependentUpon>RegisterFan.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\RegisterFan.aspx.designer.cs">
-      <DependentUpon>RegisterFan.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\RegisterStadiumManager.aspx.cs">
-      <DependentUpon>RegisterStadiumManager.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\RegisterStadiumManager.aspx.designer.cs">
-      <DependentUpon>RegisterStadiumManager.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SAMregisteration.aspx.cs">
-      <DependentUpon>SAMregisteration.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\SAMregisteration.aspx.designer.cs">
-      <DependentUpon>SAMregisteration.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SportsAssociationManager.aspx.cs">
-      <DependentUpon>SportsAssociationManager.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\SportsAssociationManager.aspx.designer.cs">
-      <DependentUpon>SportsAssociationManager.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\StadiumManager.aspx.cs">
-      <DependentUpon>StadiumManager.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\StadiumManager.aspx.designer.cs">
-      <DependentUpon>StadiumManager.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Views\SystemAdmin.aspx.cs">
       <DependentUpon>SystemAdmin.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\SystemAdmin.aspx.designer.cs">
       <DependentUpon>SystemAdmin.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SAMregisteration.aspx.cs">
-      <DependentUpon>SAMregisteration.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\SAMregisteration.aspx.designer.cs">
-      <DependentUpon>SAMregisteration.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\CRregister.aspx.cs">
-      <DependentUpon>CRregister.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\CRregister.aspx.designer.cs">
-      <DependentUpon>CRregister.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\RegisterStadiumManager.aspx.cs">
-      <DependentUpon>RegisterStadiumManager.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\RegisterStadiumManager.aspx.designer.cs">
-      <DependentUpon>RegisterStadiumManager.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\RegisterFan.aspx.cs">
-      <DependentUpon>RegisterFan.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\RegisterFan.aspx.designer.cs">
-      <DependentUpon>RegisterFan.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SportsAssociationManager.aspx.cs">
-      <DependentUpon>SportsAssociationManager.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\SportsAssociationManager.aspx.designer.cs">
-      <DependentUpon>SportsAssociationManager.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ClubRepresentative.aspx.cs">
-      <DependentUpon>ClubRepresentative.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\ClubRepresentative.aspx.designer.cs">
-      <DependentUpon>ClubRepresentative.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\StadiumManager.aspx.cs">
-      <DependentUpon>StadiumManager.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\StadiumManager.aspx.designer.cs">
-      <DependentUpon>StadiumManager.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fan.aspx.cs">
-      <DependentUpon>Fan.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\Fan.aspx.designer.cs">
-      <DependentUpon>Fan.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\UpcomingMatches.aspx.cs">
-      <DependentUpon>UpcomingMatches.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\UpcomingMatches.aspx.designer.cs">
-      <DependentUpon>UpcomingMatches.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PLayedMatches.aspx.cs">
-      <DependentUpon>PLayedMatches.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\PLayedMatches.aspx.designer.cs">
-      <DependentUpon>PLayedMatches.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ClubsNeverMatched.aspx.cs">
-      <DependentUpon>ClubsNeverMatched.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\ClubsNeverMatched.aspx.designer.cs">
-      <DependentUpon>ClubsNeverMatched.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Views\AvilableMatchesForFan.aspx.cs">
-      <DependentUpon>AvilableMatchesForFan.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\AvilableMatchesForFan.aspx.designer.cs">
-      <DependentUpon>AvilableMatchesForFan.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\UpcomingMatches.aspx.cs">
       <DependentUpon>UpcomingMatches.aspx</DependentUpon>
@@ -521,7 +362,6 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
-    <Content Include="Views\RegisterAsSportsAss.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
