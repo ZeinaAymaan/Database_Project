@@ -107,7 +107,7 @@ CREATE PROCEDURE createAllTables
         on update cascade
         on delete cascade,
 
-        Status bit not null default 'true'
+        Status bit not null default '1'
         );
 
 

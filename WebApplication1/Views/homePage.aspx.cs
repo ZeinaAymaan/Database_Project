@@ -56,6 +56,7 @@ namespace WebApplication1.Views
 
     public partial class WebForm1 : System.Web.UI.Page
     {
+        public static string usernamee;
         protected void Page_Load(object sender, EventArgs e)
         {
             db.openConnection();
@@ -77,8 +78,8 @@ namespace WebApplication1.Views
             string systemAdminLogin = "select sa.systemAdminUsername\r\nfrom systemAdmin sa\r\nwhere sa.systemAdminUsername = '"+ username +"';";
             string sportsAssocitionManagerLogin = "select sam.sportsAssociationManagerUsername\r\nfrom sportsAssociationManager sam\r\nwhere sam.sportsAssociationManagerUsername = '"+ username +"';";
             string stadiumManagerLogin = "select sm.stadiumManagerUsername\r\nfrom stadiumManager sm\r\nwhere sm.stadiumManagerUsername = '"+ username +"';";
-            string clubRepresentativeLogin = "select cr.Username\r\nfrom clubRepresentative cr\r\nwhere cr.Username = '"+ username +"';";
-            string fanLogin = "select username\r\nfrom fan \r\nwhere username = '"+ username +"';";
+            string clubRepresentativeLogin = "select cr.clubRepresentativeUsername\r\nfrom clubRepresentative cr\r\nwhere cr.clubRepresentativeUsername = '" + username +"';";
+            string fanLogin = "select fanUsername\r\nfrom fan \r\nwhere fanUsername = '"+ username +"';";
             
             string usernameReader = "";
 
@@ -144,7 +145,7 @@ namespace WebApplication1.Views
                 SqlDataReader clubRepresentativeReader = clubRepresentativeCMD.ExecuteReader();
                 while (clubRepresentativeReader.Read())
                 {
-                    if (usernameReader == clubRepresentativeReader["Username"].ToString())
+                    if (usernameReader == clubRepresentativeReader["clubRepresentativeUsername"].ToString())
                     {
                         //MessageBox.Show("club representative");
                         //clubRepresentativeReader.Close();
@@ -169,7 +170,7 @@ namespace WebApplication1.Views
                 }
                 fanReader.Close();
             }
-            
+            usernamee = UsernameTextBox.Text;
 
 
         }
