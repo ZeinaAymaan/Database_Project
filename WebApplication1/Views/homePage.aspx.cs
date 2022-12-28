@@ -106,9 +106,10 @@ namespace WebApplication1.Views
                 {
                     if (usernameReader == systemAdminReader["systemAdminUsername"].ToString())
                     {
-                        MessageBox.Show("system admin");
-                        systemAdminReader.Close();
-                        return;
+                        //MessageBox.Show("system admin");
+                        //systemAdminReader.Close();
+                        LoginButton.PostBackUrl = "~/Views/SystemAdmin.aspx";
+                        //return;
                         
                     }
                 }
@@ -119,9 +120,10 @@ namespace WebApplication1.Views
                 {
                     if (usernameReader == sportsAssociationManagerReader["sportsAssociationManagerUsername"].ToString())
                     {
-                        MessageBox.Show("sports association manager");
-                        sportsAssociationManagerReader.Close();
-                        return;
+                        //MessageBox.Show("sports association manager");
+                        //sportsAssociationManagerReader.Close();
+                        LoginButton.PostBackUrl = "~/Views/SportsAssociationManager.aspx";
+                        //return;
                     }
                 }
                 sportsAssociationManagerReader.Close();
@@ -131,9 +133,10 @@ namespace WebApplication1.Views
                 {
                     if (usernameReader == stadiumManagerReader["stadiumManagerUsername"].ToString())
                     {
-                        MessageBox.Show("stadium manager");
-                        stadiumManagerReader.Close();
-                        return;
+                        //MessageBox.Show("stadium manager");
+                        //stadiumManagerReader.Close();
+                        LoginButton.PostBackUrl = "~/Views/StadiumManager.aspx";
+                        //return;
                     }
                 }
                 stadiumManagerReader.Close();
@@ -143,9 +146,10 @@ namespace WebApplication1.Views
                 {
                     if (usernameReader == clubRepresentativeReader["Username"].ToString())
                     {
-                        MessageBox.Show("club representative");
-                        clubRepresentativeReader.Close();
-                        return;
+                        //MessageBox.Show("club representative");
+                        //clubRepresentativeReader.Close();
+                        LoginButton.PostBackUrl = "~/Views/ClubRepresentative.aspx";
+                        //return;
                     }
 
                 }
@@ -156,9 +160,10 @@ namespace WebApplication1.Views
                 {
                     if (usernameReader == fanReader["username"].ToString())
                     {
-                        MessageBox.Show("fan");
-                        fanReader.Close();
-                        return;
+                        //MessageBox.Show("fan");
+                        //fanReader.Close();
+                        LoginButton.PostBackUrl = "~/Views/Fan.aspx";
+                        //return;
                     }
 
                 }
@@ -169,16 +174,7 @@ namespace WebApplication1.Views
 
         }
 
-        protected void RegisterSportsAssociationManagerButton_Click(object sender, EventArgs e)
-        {
 
-        }
-
-
-        protected void button1_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("it's working");
-        }
         //public IActionResult RegisterAsSportsAss()
         //{
         //    return View();

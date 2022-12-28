@@ -14,33 +14,55 @@ namespace WebApplication1.Views
         protected void Page_Load(object sender, EventArgs e)
         {
             db.openConnection();
+
+            for(int i = 00; i < 60; i++)
+            {
+                ListItem minutes = new ListItem("" + i);
+                SMinutsDropDownList.Items.Add(minutes);
+                EMinutesDropDownList.Items.Add(minutes);
+            }
+
+            for (int i = 00; i < 24; i++)
+            {
+                ListItem hours = new ListItem("" + i);
+                SHoursDropDownList.Items.Add(hours);
+                EHoursDropDownList.Items.Add(hours);
+            }
         }
 
-        protected void AddSAMButton_Click(object sender, EventArgs e)
+        protected void AddMatchSAMButton_Click(object sender, EventArgs e)
         {
             string HostClubName = HostClubNameDropDownList.Text;
             string GuestClubName = GuestClubNameDropDownList.Text;
-            string StartTime = StartTimeSAMTextBox.Text;
-            string EndTime = EndTimeSAMTextBox.Text;
+            string StartTimeDate = StartDateCalender.SelectedDate.ToString("yyyy/MM/dd");
+            string EndTimeDate = EndDateCalender.SelectedDate.ToString("yyyy/MM/dd");
+            string StartTimeHours = SHoursDropDownList.Text;
+            string StartTimeMinutes = SMinutsDropDownList.Text;
+            string EndTimeHours = EHoursDropDownList.Text;
+            string EndTimeMinutes = EMinutesDropDownList.Text;
 
-            if (HostClubName == "" || GuestClubName == "" || StartTime == "" || EndTime == "" )
+            if (HostClubName == "Select" || GuestClubName == "Select" || StartTimeMinutes == "Minutes" || StartTimeHours == "Hours" || EndTimeMinutes == "Minutes" || EndTimeHours == "Hours")
             {
                 MessageBox.Show("Host Club Name or Guest Club Name or Start Time or End Time fields can't be empty");
                 return;
             }
+
             if(Equals(HostClubName , GuestClubName))
             {
                 MessageBox.Show("Host Club Name and Guest Club Name can't be the same");
                 return;
             }
 
-            if (HostClubName.Length > 20 || GuestClubName.Length > 20 || StartTime.Length > 20 || EndTime.Length > 20)
+            string startTime = StartTimeDate + " " + StartTimeHours + " : " + StartTimeMinutes; 
+            string endTime = EndTimeDate + " " + EndTimeHours + " : " + EndTimeMinutes;
+
+            if(endTime.CompareTo(startTime) > 0)
             {
-                MessageBox.Show("Host Club Name or Guest Club Name or Start Time or End Time can't be more than 20 charactars");
+                MessageBox.Show("End time can't be before start time");
                 return;
             }
 
-            string checkMatchExistsQuery = "select  c.MatchName\r\nfrom Match m inner join Match c on m.Host_ID = c.ID\r\nwhere c.MatchName = 'hostName' and m.startTime = 'sTime' and m.endTime = 'eTime'";
+            string checkMatchExistsQuery = "select  c.clubName\r\nfrom Match m inner join Club c on m.Host_ID = c.ID\r\nwhere c.clubName = '"+ HostClubName +"' and m.startTime = '"+ startTime +"' and m.endTime = '"+ endTime +"'";
             SqlCommand checkMatchExistsCMD = new SqlCommand(checkMatchExistsQuery, db.con);
             SqlDataReader checkMatchExistsReader = checkMatchExistsCMD.ExecuteReader();
             while (checkMatchExistsReader.Read())
@@ -49,16 +71,9 @@ namespace WebApplication1.Views
                 checkMatchExistsReader.Close();
                 return;
             }
-            db.openConnection();
-            for(int i = 00; i < 60; i++)
-            {
-                ListItem minutes = new ListItem("" + i);
-                SMinutsDropDownList.Items.Add(minutes);
-                EMinutesDropDownList.Items.Add(minutes);
-            }
-
             checkMatchExistsReader.Close();
-            string addMatchQuery = "exec addMatch '" + HostClubName + "', '" + GuestClubName + "', '" + StartTime + "', '" + EndTime + "';";
+
+            string addMatchQuery = "exec addNewMatch '" + HostClubName + "', '" + GuestClubName + "', '" + startTime + "', '" + endTime + "';";
             SqlCommand addMatchCMD = new SqlCommand(addMatchQuery, db.con);
             SqlDataReader addMatchReader = addMatchCMD.ExecuteReader();
             addMatchReader.Close();
@@ -67,20 +82,33 @@ namespace WebApplication1.Views
 
         }
 
-        protected void DeleteSAMButton_Click(object sender, EventArgs e)
+        protected void DeleteMatchSAMButton_Click(object sender, EventArgs e)
         {
             string HostClubName = HostClubNameDropDownList.Text;
             string GuestClubName = GuestClubNameDropDownList.Text;
-            string StartTime = StartTimeSAMTextBox.Text;
-            string EndTime = EndTimeSAMTextBox.Text;
+            string StartTimeDate = StartDateCalender.SelectedDate.ToString("yyyy/MM/dd");
+            string EndTimeDate = EndDateCalender.SelectedDate.ToString("yyyy/MM/dd");
+            string StartTimeHours = SHoursDropDownList.Text;
+            string StartTimeMinutes = SMinutsDropDownList.Text;
+            string EndTimeHours = EHoursDropDownList.Text;
+            string EndTimeMinutes = EMinutesDropDownList.Text;
 
-            if (HostClubName == "" || GuestClubName == "" || StartTime == "" || EndTime == "")
+            if (HostClubName == "Select" || GuestClubName == "Select" || StartTimeMinutes == "Minutes" || StartTimeHours == "Hours" || EndTimeMinutes == "Minutes" || EndTimeHours == "Hours")
             {
                 MessageBox.Show("Host Club Name or Guest Club Name or Start Time or End Time fields can't be empty");
                 return;
             }
 
-            string checkMatchExistsQuery = "select  c.MatchName\r\nfrom Match m inner join Match c on m.Host_ID = c.ID\r\nwhere c.MatchName = 'hostName' and m.startTime = 'sTime' and m.endTime = 'eTime'";
+            string startTime = StartTimeDate + " " + StartTimeHours + " : " + StartTimeMinutes;
+            string endTime = EndTimeDate + " " + EndTimeHours + " : " + EndTimeMinutes;
+
+            if (endTime.CompareTo(startTime) < 0)
+            {
+                MessageBox.Show("End time can't be before start time");
+                return;
+            }
+
+            string checkMatchExistsQuery = "select  c.clubName\r\nfrom Match m inner join Club c on m.Host_ID = c.ID\r\nwhere c.clubName = '"+ HostClubName +"' and m.startTime = '"+ startTime +"' and m.endTime = '"+ endTime +"'";
             SqlCommand checkMatchExistsCMD = new SqlCommand(checkMatchExistsQuery, db.con);
             SqlDataReader checkMatchExistsReader = checkMatchExistsCMD.ExecuteReader();
 
@@ -91,31 +119,18 @@ namespace WebApplication1.Views
                 return;
 
             }
-
             checkMatchExistsReader.Close();
-            string deleteMatchQuery = "exec deleteMatch '" + HostClubName + "', '" + GuestClubName + "', '" + StartTime + "', '" + EndTime + "';";
+
+
+
+            string deleteMatchQuery = "exec deleteMatch '" + HostClubName + "', '" + GuestClubName + "', '" + startTime + "', '" + endTime + "';";
             SqlCommand deleteMatchCMD = new SqlCommand(deleteMatchQuery, db.con);
             SqlDataReader deleteMatchReader = deleteMatchCMD.ExecuteReader();
             deleteMatchReader.Close();
             MessageBox.Show("Match deleted successfully");
-            for (int i = 00; i < 24; i++)
-            {
-                ListItem hours = new ListItem("" + i);
-                SHoursDropDownList.Items.Add(hours);
-                EHoursDropDownList.Items.Add(hours);
-            }
+
         }
 
-        protected void UpcomingMatchesButton_Click(object sender, EventArgs e)
-        {
-            string upcomingMatchesQuery = "select c1.clubName as Host,c2.clubName as Guest, m.startTime, m.endTime\r\nfrom Match m inner join club c1 on m.Host_ID = c1.ID\r\n\t\t\tleft outer join club c2 on c2.ID = m.guest_ID\r\nwhere m.startTime > CURRENT_TIMESTAMP and m.stadium_ID is not null";
-            SqlCommand upcomingMatchesCMD = new SqlCommand(upcomingMatchesQuery, db.con);
-            SqlDataReader upcomingMatchesReader = upcomingMatchesCMD.ExecuteReader();
-            while (upcomingMatchesReader.Read())
-            {
-                UpcomeingMatchesTable.Rows.Add(upcomingMatchesReader["Host"]);
-                UpcomeingMatchesTable.Rows.Add();
-            }
-        }
+
     }
 }
