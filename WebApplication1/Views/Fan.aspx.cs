@@ -15,7 +15,7 @@ namespace WebApplication1.Views
         //public static DateTime matchStartTime;
 
         public static string st;
-        
+
         //public static DateTime endTime;
 
         //public class matchTime
@@ -23,6 +23,7 @@ namespace WebApplication1.Views
         //    public string matchStartTime { get; set; }
 
         //}
+        
 
         protected void Page_Load(object sender, EventArgs e)
         {

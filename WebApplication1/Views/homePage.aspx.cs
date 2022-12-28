@@ -57,6 +57,7 @@ namespace WebApplication1.Views
     public partial class WebForm1 : System.Web.UI.Page
     {
         public static string usernamee;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             db.openConnection();
