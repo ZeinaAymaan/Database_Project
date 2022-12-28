@@ -22,13 +22,12 @@
                 <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
                 <StaticSelectedStyle BackColor="#507CD1" />
             </asp:Menu>
-            <h1>Available Matches</h1>
-                <asp:GridView ID="GridView1" runat="server" DataSourceID="SqlDataSource1">
-                </asp:GridView>
-                <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ehnaawiConnectionString %>" SelectCommand="SELECT availableMatchesToAttend_1.Host, availableMatchesToAttend_1.Guest, availableMatchesToAttend_1.stadiumName, Stadium.stadiumLocation FROM Stadium INNER JOIN dbo.availableMatchesToAttend() AS availableMatchesToAttend_1 ON Stadium.stadiumName = availableMatchesToAttend_1.stadiumName"></asp:SqlDataSource>
+            <h1>Available Matches From
+                <asp:Label ID="matchStartTimeLabel" runat="server" Text="Label"></asp:Label>
+            </h1>
             <br />
             <h3>Select your match</h3>
-            <asp:DropDownList ID="selectedMatchDropDownList" runat="server" DataSourceID="SqlDataSource1">
+            <asp:DropDownList ID="selectedMatchDropDownList" runat="server">
                 <asp:ListItem Text ="Match"></asp:ListItem>
             </asp:DropDownList>
             <br />

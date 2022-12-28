@@ -14,8 +14,15 @@ namespace WebApplication1.Views
         //public static DateTime matchDate;
         //public static DateTime matchStartTime;
 
-        public static string matchStartTime;
+        public static string st;
+        
         //public static DateTime endTime;
+
+        //public class matchTime
+        //{
+        //    public string matchStartTime { get; set; }
+
+        //}
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -58,12 +65,29 @@ namespace WebApplication1.Views
         protected void ShowMatchesButton_Click(object sender, EventArgs e)
         {
             DateTime matchDate = FanCalendar.SelectedDate;
-            matchStartTime = matchDate.ToString("yyyy/MM/dd") + " " + SHoursDropDownList.Text + ":" + SMinutesDropDownList.Text;
+
+            
+
+            if(SHoursDropDownList.Text == "Hours" || SMinutesDropDownList.Text == "Minutes")
+            {
+                MessageBox.Show("Time can't be empty");
+                return;
+            }
+
+            st = matchDate.ToString("yyyy/MM/dd") + " " + SHoursDropDownList.Text + ":" + SMinutesDropDownList.Text;
+
+
+
+            //var matchTime = new matchTime();
+            //matchTime.matchStartTime = st;
+
+            //WebForm14 avilableMatches = new WebForm14(matchTime);
+
             //matchStartTime = DateTime.ParseExact();
             //endTime = DateTime.ParseExact(EHoursDropDownList.Text + ":" + EMinutesDropDownList.Text, "HH:mm", CultureInfo.InvariantCulture);
 
             //startTimeDateTime = matchDate.ToString("yyyy/MM/dd ") + matchStartTime.ToString();
-            //MessageBox.Show(dateTime);
+            //MessageBox.Show(matchStartTime +" " );
             //return;
 
             if (matchDate < DateTime.Now)
@@ -71,6 +95,8 @@ namespace WebApplication1.Views
                 MessageBox.Show("No avilable matches before today");
                 return;
             }
+
+            ShowMatchesButton.PostBackUrl = "~/Views/AvilableMatchesForFan.aspx";
 
             //if(date == DateTime.Now && startTime <= DateTime.Now)
             //{
