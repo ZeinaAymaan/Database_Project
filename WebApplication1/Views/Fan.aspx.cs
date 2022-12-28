@@ -15,7 +15,8 @@ namespace WebApplication1.Views
         //public static DateTime matchStartTime;
 
         public static string st;
-
+        public static DateTime stDate;
+        
         //public static DateTime endTime;
 
         //public class matchTime
@@ -76,7 +77,7 @@ namespace WebApplication1.Views
             }
 
             st = matchDate.ToString("yyyy/MM/dd") + " " + SHoursDropDownList.Text + ":" + SMinutesDropDownList.Text;
-
+            stDate = DateTime.Parse(st);
 
 
             //var matchTime = new matchTime();
