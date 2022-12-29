@@ -79,8 +79,8 @@ namespace WebApplication1.Views
             string systemAdminLogin = "select sa.systemAdminUsername\r\nfrom systemAdmin sa\r\nwhere sa.systemAdminUsername = '"+ username +"';";
             string sportsAssocitionManagerLogin = "select sam.sportsAssociationManagerUsername\r\nfrom sportsAssociationManager sam\r\nwhere sam.sportsAssociationManagerUsername = '"+ username +"';";
             string stadiumManagerLogin = "select sm.stadiumManagerUsername\r\nfrom stadiumManager sm\r\nwhere sm.stadiumManagerUsername = '"+ username +"';";
-            string clubRepresentativeLogin = "select cr.clubRepresentativeUsername\r\nfrom clubRepresentative cr\r\nwhere cr.clubRepresentativeUsername = '" + username +"';";
-            string fanLogin = "select fanUsername\r\nfrom fan \r\nwhere fanUsername = '"+ username +"';";
+            string clubRepresentativeLogin = "select cr.Username\r\nfrom clubRepresentative cr\r\nwhere cr.Username = '" + username +"';";
+            string fanLogin = "select Username\r\nfrom fan \r\nwhere Username = '"+ username +"';";
             
             string usernameReader = "";
 
@@ -146,7 +146,7 @@ namespace WebApplication1.Views
                 SqlDataReader clubRepresentativeReader = clubRepresentativeCMD.ExecuteReader();
                 while (clubRepresentativeReader.Read())
                 {
-                    if (usernameReader == clubRepresentativeReader["clubRepresentativeUsername"].ToString())
+                    if (usernameReader == clubRepresentativeReader["Username"].ToString())
                     {
                         //MessageBox.Show("club representative");
                         //clubRepresentativeReader.Close();
