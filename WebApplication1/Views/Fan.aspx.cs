@@ -68,31 +68,16 @@ namespace WebApplication1.Views
         {
             DateTime matchDate = FanCalendar.SelectedDate;
 
-            
-
-            if(SHoursDropDownList.Text == "Hours" || SMinutesDropDownList.Text == "Minutes")
-            {
-                MessageBox.Show("Time can't be empty");
-                return;
-            }
+            //if(SHoursDropDownList.Text == "Hours" || SMinutesDropDownList.Text == "Minutes")
+            //{
+            //    MessageBox.Show("Time can't be empty");
+            //    return;
+            //}
 
             st = matchDate.ToString("yyyy/MM/dd") + " " + SHoursDropDownList.Text + ":" + SMinutesDropDownList.Text;
             stDate = DateTime.Parse(st);
 
-
-            //var matchTime = new matchTime();
-            //matchTime.matchStartTime = st;
-
-            //WebForm14 avilableMatches = new WebForm14(matchTime);
-
-            //matchStartTime = DateTime.ParseExact();
-            //endTime = DateTime.ParseExact(EHoursDropDownList.Text + ":" + EMinutesDropDownList.Text, "HH:mm", CultureInfo.InvariantCulture);
-
-            //startTimeDateTime = matchDate.ToString("yyyy/MM/dd ") + matchStartTime.ToString();
-            //MessageBox.Show(matchStartTime +" " );
-            //return;
-
-            if (matchDate < DateTime.Now)
+            if (stDate < DateTime.Now)
             {
                 MessageBox.Show("No avilable matches before today");
                 return;
@@ -100,11 +85,6 @@ namespace WebApplication1.Views
 
             ShowMatchesButton.PostBackUrl = "~/Views/AvilableMatchesForFan.aspx";
 
-            //if(date == DateTime.Now && startTime <= DateTime.Now)
-            //{
-            //    MessageBox.Show("Matchs ended :(");
-            //    return;
-            //}
         }
     }
 }

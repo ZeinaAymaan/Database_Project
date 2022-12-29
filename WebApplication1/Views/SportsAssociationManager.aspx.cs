@@ -17,16 +17,36 @@ namespace WebApplication1.Views
 
             for(int i = 00; i < 60; i++)
             {
-                ListItem minutes = new ListItem("" + i);
-                SMinutsDropDownList.Items.Add(minutes);
-                EMinutesDropDownList.Items.Add(minutes);
+                if(i < 10)
+                {
+                    ListItem minutes = new ListItem("0" + i);
+                    SMinutsDropDownList.Items.Add(minutes);
+                    EMinutesDropDownList.Items.Add(minutes);
+                }
+                else
+                {
+                    ListItem minutes = new ListItem("" + i);
+                    SMinutsDropDownList.Items.Add(minutes);
+                    EMinutesDropDownList.Items.Add(minutes);
+                }
+                
             }
 
             for (int i = 00; i < 24; i++)
             {
-                ListItem hours = new ListItem("" + i);
-                SHoursDropDownList.Items.Add(hours);
-                EHoursDropDownList.Items.Add(hours);
+                if(i < 10)
+                {
+                    ListItem hours = new ListItem("0" + i);
+                    SHoursDropDownList.Items.Add(hours);
+                    EHoursDropDownList.Items.Add(hours);
+                }
+                else
+                {
+                    ListItem hours = new ListItem("" + i);
+                    SHoursDropDownList.Items.Add(hours);
+                    EHoursDropDownList.Items.Add(hours);
+                }
+                
             }
         }
 
@@ -56,7 +76,7 @@ namespace WebApplication1.Views
             string startTime = StartTimeDate + " " + StartTimeHours + " : " + StartTimeMinutes; 
             string endTime = EndTimeDate + " " + EndTimeHours + " : " + EndTimeMinutes;
 
-            if(endTime.CompareTo(startTime) > 0)
+            if(endTime.CompareTo(startTime) < 0)
             {
                 MessageBox.Show("End time can't be before start time");
                 return;

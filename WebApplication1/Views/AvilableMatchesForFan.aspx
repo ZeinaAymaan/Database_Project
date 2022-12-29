@@ -25,20 +25,6 @@
             <h1>Available Matches From
                 <asp:Label ID="matchStartTimeLabel" runat="server" Text="Label"></asp:Label>
             </h1>
-                <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1">
-                    <Columns>
-                        <asp:BoundField DataField="Host" HeaderText="Host" SortExpression="Host" />
-                        <asp:BoundField DataField="Guest" HeaderText="Guest" SortExpression="Guest" />
-                        <asp:BoundField DataField="stadiumName" HeaderText="stadiumName" SortExpression="stadiumName" />
-                        <asp:BoundField DataField="stadiumLocation" HeaderText="stadiumLocation" SortExpression="stadiumLocation" />
-                    </Columns>
-            </asp:GridView>
-            <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:ehnaawiConnectionString %>" SelectCommand="SELECT availableMatchesToAttend_1.Host, availableMatchesToAttend_1.Guest, availableMatchesToAttend_1.stadiumName, Stadium.stadiumLocation 
-FROM Stadium INNER JOIN dbo.availableMatchesToAttend(@st) AS availableMatchesToAttend_1 ON Stadium.stadiumName = availableMatchesToAttend_1.stadiumName">
-                <SelectParameters>
-                    <asp:FormParameter FormField="matchStartTimeLabel" Name="st" />
-                </SelectParameters>
-            </asp:SqlDataSource>
             <br />
             <h3>Select your match</h3>
             <asp:DropDownList ID="selectedMatchDropDownList" runat="server">

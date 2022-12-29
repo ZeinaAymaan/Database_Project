@@ -38,11 +38,9 @@
             </p>
             <p>Start Time:
                 <asp:DropDownList ID="SHoursDropDownList" runat="server">
-                    <asp:ListItem Text ="Hours"></asp:ListItem>
                 </asp:DropDownList>
 &nbsp;
                 <asp:DropDownList ID="SMinutesDropDownList" runat="server">
-                    <asp:ListItem Text ="Minutes"></asp:ListItem>
                 </asp:DropDownList>
             </p>
             <p>&nbsp;</p>
