@@ -108,29 +108,54 @@ namespace WebApplication1.Views
             DataSet dataSet2 = new DataSet();
             StadInfoDA.Fill(dataSet2);
             SqlDataReader Stadinforeader = viewStadinfo.ExecuteReader();
-            if (Stadinforeader.Read())
+            if (Stadinforeader.HasRows)
             {
-                
-                Label6.Text = "Available Stadiums Starting "+ st + ":";
+                Label6.Text = "Available Stadiums Starting " + st + ":";
                 GridView2.AutoGenerateColumns = true;
                 GridView2.DataSource = dataSet2;
                 GridView2.DataBind();
-                DropDownList3.DataSource= dataSet2;
-                DropDownList1.DataValueField = "Stadium Name";
-                DropDownList3.DataBind();
+
             }
-            else
+            while (Stadinforeader.Read())
+            {
+                DropDownList3.Items.Add(Stadinforeader["Stadium Name"].ToString());
+            }
+            while(!Stadinforeader.Read())
             {
                 Label6.Text = "There are no available stadiums on "+st+".";
-                Button2.Dispose();
+                Button2.Visible=false;
+                break;
             }
             Stadinforeader.Close();
         }
 
         protected void Button2_Click(object sender, EventArgs e)
         {
-            MultiView2.ActiveViewIndex++;
+            MultiView2.ActiveViewIndex=2;
+            DateTime stadiumDate = Calendar1.SelectedDate;
+            string st = stadiumDate.ToString("yyyy/MM/dd") + " " + DropDownList1.Text + ":" + DropDownList2.Text + ":00";
+            string matchInfoQuery = "select c1.clubName 'Host',c2.clubName 'Guest', Match.startTime \r\n from Match inner join Club c1 on c1.ID = Match.host_ID inner join Club c2 on c2.ID = Match.guest_ID \r\n where Match.startTime > CURRENT_TIMESTAMP AND c1.clubName ='" + Label2.Text.ToString() + "'";
+            SqlCommand matchInfoCMD = new SqlCommand(matchInfoQuery, db.con);
+            SqlDataReader matchInfoReader = matchInfoCMD.ExecuteReader();
+            while (matchInfoReader.Read())
+            {
+                string hostName = matchInfoReader["Host"].ToString();
+                string guestName = matchInfoReader["Guest"].ToString();
+                string startTime = matchInfoReader["startTime"].ToString();
+                //string stadiumName = matchInfoReader["stadiumName"].ToString();
+                //string stadiumLocation = matchInfoReader["stadiumLocation"].ToString();
+                string matchInfo = hostName + " vs " + guestName + " starts at: " + startTime;
+                DropDownList4.Items.Add(matchInfo);
+            }
+            matchInfoReader.Close();
+        }
 
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            DateTime stadiumDate = Calendar1.SelectedDate;
+            string st = stadiumDate.ToString("yyyy/MM/dd") + " " + DropDownList1.Text + ":" + DropDownList2.Text + ":00";
+            string matchInfoQuery = "exec addHostRequest '" + Label2.Text.ToString() + "', '"+DropDownList3.Text+"', '"+st+"'";
+            SqlCommand matchInfoCMD = new SqlCommand(matchInfoQuery, db.con);
         }
     }
 }

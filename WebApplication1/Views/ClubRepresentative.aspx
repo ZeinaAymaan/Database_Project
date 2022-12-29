@@ -81,11 +81,8 @@
                    </asp:View>
                    <asp:View ID="View3" runat="server">
                        <asp:Label ID="Label6" runat="server"></asp:Label>
-                       <asp:GridView ID="GridView2" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" OnSelectedIndexChanged="GridView2_SelectedIndexChanged">
+                       <asp:GridView ID="GridView2" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
                            <AlternatingRowStyle BackColor="#DCDCDC" />
-                           <Columns>
-                               <asp:ButtonField Text="Select" />
-                           </Columns>
                            <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
                            <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
                            <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" />
@@ -97,13 +94,19 @@
                            <SortedDescendingHeaderStyle BackColor="#000065" />
                        </asp:GridView>
                        <br />
+                       <asp:Button ID="Button2" runat="server" Text="Host a Match" OnClick="Button2_Click" />
                    </asp:View>
                    <asp:View ID="View4" runat="server">
                        <asp:DropDownList ID="DropDownList3" runat="server">
+                           <asp:ListItem Selected="True">Stadium Name</asp:ListItem>
                        </asp:DropDownList>
                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                        <asp:DropDownList ID="DropDownList4" runat="server">
+                           <asp:ListItem>Match to Host</asp:ListItem>
                        </asp:DropDownList>
+                       <br />
+                       <br />
+                       <asp:Button ID="Button3" runat="server" Text="Host Match" OnClick="Button3_Click" />
                        <br />
                    </asp:View>
         </asp:MultiView>
