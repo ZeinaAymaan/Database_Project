@@ -46,7 +46,7 @@ namespace WebApplication1.Views
             }
             checkUsernameValidReader.Close();
 
-            string checkStadiumWithoutRepresentative = "SELECT c.StadiumName, cr.Stadium_ID FROM Stadium AS c LEFT OUTER JOIN StadiumRepresentative AS cr ON c.ID = cr.Stadium_ID WHERE (cr.Stadium_ID IS NULL)";
+            string checkStadiumWithoutRepresentative = "SELECT c.StadiumName, cr.Stadium_ID FROM Stadium AS c LEFT OUTER JOIN stadiumManager AS cr ON c.ID = cr.Stadium_ID WHERE (cr.Stadium_ID IS NULL)";
             SqlCommand checkStadiumWithoutRepresentativeCMD = new SqlCommand(checkStadiumWithoutRepresentative, db.con);
             SqlDataReader checkStadiumWithoutRepresentativeReader = checkStadiumWithoutRepresentativeCMD.ExecuteReader();
             bool flag = false;

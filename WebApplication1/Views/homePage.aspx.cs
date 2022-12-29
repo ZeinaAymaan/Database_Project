@@ -15,7 +15,7 @@ namespace WebApplication1.Views
 
     class db
     {
-        public static SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ehnaawi;Integrated Security=True");
+        public static SqlConnection con = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ehnaawi;Integrated Security=True;MultipleActiveResultSets=True");
         //public static SqlCommand loginCMD = new SqlCommand();
 
         public static void openConnection()
