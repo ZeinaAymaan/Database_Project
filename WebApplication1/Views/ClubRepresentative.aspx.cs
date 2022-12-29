@@ -19,7 +19,7 @@ namespace WebApplication1.Views
         {
             db.openConnection();
             string username = WebForm1.usernamee;
-            string viewClubInfoQuery = "select c.ID, c.clubName, c.clubLocation\r\nfrom Club as c inner join clubRepresentative as cr on c.ID=cr.club_ID\r\nwhere cr.clubRepresentativeUsername  = '" + username + "';";
+            string viewClubInfoQuery = "select c.ID, c.clubName, c.clubLocation\r\nfrom Club as c inner join clubRepresentative as cr on c.ID=cr.club_ID\r\nwhere cr.Username  = '" + username + "';";
             SqlCommand clubinfo = new SqlCommand(viewClubInfoQuery, db.con);
             SqlDataReader clubinforeader = clubinfo.ExecuteReader();
             while (clubinforeader.Read())
@@ -32,8 +32,8 @@ namespace WebApplication1.Views
 
             MultiView1.ActiveViewIndex = 0;
             //MultiView1.ActiveViewIndex= 1;
-            string viewUpcominClubMatchesQuery = "select c1name as 'Host club', c2name as 'Guest club', m.startTime as 'Start Time', m.endTime 'End Time', stadiumname as 'Stadium Name'\r\n" +
-           "from upcomingMatchesOfClub ('" + Label2.Text + "') inner join Club c on c1name= c.clubName inner join Match m on c.ID=m.Host_ID";
+            string viewUpcominClubMatchesQuery = "select HostName as 'Host club', GuestName as 'Guest club', m.startTime as 'Start Time', m.endTime 'End Time', stadiumname as 'Stadium Name'\r\n" +
+           "from upcomingMatchesOfClub ('" + Label2.Text + "') inner join Club c on HostName= c.clubName inner join Match m on c.ID=m.Host_ID";
             SqlCommand viewUpcomingClubinfo = new SqlCommand(viewUpcominClubMatchesQuery, db.con);
             SqlDataAdapter da = new SqlDataAdapter(viewUpcomingClubinfo);
             SqlCommandBuilder cb = new SqlCommandBuilder(da);
@@ -101,7 +101,7 @@ namespace WebApplication1.Views
 
             MultiView2.ActiveViewIndex++;
             string st = stadiumDate.ToString("yyyy/MM/dd") + " " + DropDownList1.Text + ":" + DropDownList2.Text +":00";
-            string viewAvailableStadQuery = "select sname 'Stadium Name', sloc 'Stadium Location', cap 'Capacity' from viewAvailableStadiumsOn('" + st +"')";
+            string viewAvailableStadQuery = "select stadiumName 'Stadium Name', stadiumLocation 'Stadium Location', Capacity from viewAvailableStadiumsOn('" + st +"')";
             SqlCommand viewStadinfo = new SqlCommand(viewAvailableStadQuery, db.con);
             SqlDataAdapter StadInfoDA = new SqlDataAdapter(viewStadinfo);
             SqlCommandBuilder cb = new SqlCommandBuilder(StadInfoDA);
@@ -116,16 +116,15 @@ namespace WebApplication1.Views
                 GridView2.DataBind();
 
             }
+            else
+            {
+                Label6.Text = "There are no available stadiums on " + st + ".";
+            }
             while (Stadinforeader.Read())
             {
                 DropDownList3.Items.Add(Stadinforeader["Stadium Name"].ToString());
             }
-            while(!Stadinforeader.Read())
-            {
-                Label6.Text = "There are no available stadiums on "+st+".";
-                Button2.Visible=false;
-                break;
-            }
+            
             Stadinforeader.Close();
         }
 
