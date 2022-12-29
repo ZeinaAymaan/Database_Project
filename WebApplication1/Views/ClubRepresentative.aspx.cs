@@ -122,11 +122,12 @@ namespace WebApplication1.Views
             else
             {
                 Label6.Text = "There are no available stadiums on "+st+".";
+                Button2.Dispose();
             }
             Stadinforeader.Close();
         }
 
-        protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
+        protected void Button2_Click(object sender, EventArgs e)
         {
             MultiView2.ActiveViewIndex++;
 
