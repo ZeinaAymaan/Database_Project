@@ -29,7 +29,7 @@
         <br />
         Club Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Label ID="Label3" runat="server" ></asp:Label>
-        <asp:Panel ID="Panel1" runat="server" style="margin-bottom: 85px">
+        <asp:Panel ID="Panel1" runat="server" style="margin-bottom: 85px" Height="1013px">
             <asp:MultiView ID="MultiView1" runat="server" >
                 <asp:View ID="View1" runat="server">
                     <br />
@@ -80,9 +80,12 @@
                        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="View" />
                    </asp:View>
                    <asp:View ID="View3" runat="server">
-                       <asp:Label ID="Label6" runat="server" ></asp:Label>
-                       <asp:GridView ID="GridView2" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical">
+                       <asp:Label ID="Label6" runat="server"></asp:Label>
+                       <asp:GridView ID="GridView2" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" OnSelectedIndexChanged="GridView2_SelectedIndexChanged">
                            <AlternatingRowStyle BackColor="#DCDCDC" />
+                           <Columns>
+                               <asp:ButtonField Text="Select" />
+                           </Columns>
                            <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
                            <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
                            <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" />
@@ -93,6 +96,15 @@
                            <SortedDescendingCellStyle BackColor="#CAC9C9" />
                            <SortedDescendingHeaderStyle BackColor="#000065" />
                        </asp:GridView>
+                       <br />
+                   </asp:View>
+                   <asp:View ID="View4" runat="server">
+                       <asp:DropDownList ID="DropDownList3" runat="server">
+                       </asp:DropDownList>
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                       <asp:DropDownList ID="DropDownList4" runat="server">
+                       </asp:DropDownList>
+                       <br />
                    </asp:View>
         </asp:MultiView>
         </asp:Panel>

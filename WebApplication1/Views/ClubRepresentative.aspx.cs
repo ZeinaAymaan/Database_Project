@@ -110,16 +110,26 @@ namespace WebApplication1.Views
             SqlDataReader Stadinforeader = viewStadinfo.ExecuteReader();
             if (Stadinforeader.Read())
             {
+                
                 Label6.Text = "Available Stadiums Starting "+ st + ":";
                 GridView2.AutoGenerateColumns = true;
                 GridView2.DataSource = dataSet2;
                 GridView2.DataBind();
+                DropDownList3.DataSource= dataSet2;
+                DropDownList1.DataValueField = "Stadium Name";
+                DropDownList3.DataBind();
             }
             else
             {
                 Label6.Text = "There are no available stadiums on "+st+".";
             }
             Stadinforeader.Close();
+        }
+
+        protected void GridView2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MultiView2.ActiveViewIndex++;
+
         }
     }
 }
