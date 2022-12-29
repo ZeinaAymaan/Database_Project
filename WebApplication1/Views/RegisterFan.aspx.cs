@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -74,6 +75,17 @@ namespace WebApplication1.Views
                 return;
             }
             checkUsernameValidReader.Close();
+
+            string nationaIDexistsQuery = "select NationaID\r\nfrom Fan where NationaID = '"+ nationalID +"'";
+            SqlCommand nationaIDexistsCMD = new SqlCommand(nationaIDexistsQuery, db.con);
+            SqlDataReader nationaIDreader = nationaIDexistsCMD.ExecuteReader();
+            while (nationaIDreader.Read())
+            {
+                MessageBox.Show("National ID already exists");
+                nationaIDreader.Close();
+                return;
+            }
+            nationaIDreader.Close();
 
             string addFanQuery = "exec addFan '"+ Name +"', '"+ Username +"', '"+ Password +"', '"+ nationalID +"', '"+ birthDate +"', '"+ address +"', " + phoneNumber;
             SqlCommand addFanCMD = new SqlCommand(addFanQuery, db.con);

@@ -46,15 +46,15 @@ namespace WebApplication1.Views
             }
             checkUsernameValidReader.Close();
 
-            string checkStadiumWithoutRepresentative = "SELECT c.StadiumName, cr.Stadium_ID FROM Stadium AS c LEFT OUTER JOIN StadiumRepresentative AS cr ON c.ID = cr.Stadium_ID WHERE (cr.Stadium_ID IS NULL)";
-            SqlCommand checkStadiumWithoutRepresentativeCMD = new SqlCommand(checkStadiumWithoutRepresentative, db.con);
-            SqlDataReader checkStadiumWithoutRepresentativeReader = checkStadiumWithoutRepresentativeCMD.ExecuteReader();
+            string checkStadiumWithoutManager = "SELECT c.StadiumName, cr.Stadium_ID FROM Stadium AS c LEFT OUTER JOIN StadiumManager AS cr ON c.ID = cr.Stadium_ID WHERE (cr.Stadium_ID IS NULL)";
+            SqlCommand checkStadiumWithoutManagerCMD = new SqlCommand(checkStadiumWithoutManager, db.con);
+            SqlDataReader checkStadiumWithoutManagerReader = checkStadiumWithoutManagerCMD.ExecuteReader();
             bool flag = false;
-            while (checkStadiumWithoutRepresentativeReader.Read())
+            while (checkStadiumWithoutManagerReader.Read())
             {
-                if (stadiumName == checkStadiumWithoutRepresentativeReader["StadiumName"].ToString()) flag = true;
+                if (stadiumName == checkStadiumWithoutManagerReader["StadiumName"].ToString()) flag = true;
             }
-            checkStadiumWithoutRepresentativeReader.Close();
+            checkStadiumWithoutManagerReader.Close();
             if (!flag)
             {
                 MessageBox.Show("Stadium already has a Manager");

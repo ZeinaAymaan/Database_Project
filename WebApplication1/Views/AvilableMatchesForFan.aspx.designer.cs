@@ -42,6 +42,24 @@ namespace WebApplication1.Views
         protected global::System.Web.UI.WebControls.Label matchStartTimeLabel;
 
         /// <summary>
+        /// checkLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label checkLabel;
+
+        /// <summary>
+        /// availableMatchesGridView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView availableMatchesGridView;
+
+        /// <summary>
         /// selectedMatchDropDownList control.
         /// </summary>
         /// <remarks>
@@ -49,15 +67,6 @@ namespace WebApplication1.Views
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList selectedMatchDropDownList;
-
-        /// <summary>
-        /// TicketsDropDownList control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList TicketsDropDownList;
 
         /// <summary>
         /// BuyButton control.

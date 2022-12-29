@@ -50,7 +50,26 @@ namespace WebApplication1.Views
             //GridView1.DataBind();
 
             SqlCommand matchInfoCMD = new SqlCommand(matchInfoQuery, db.con);
+            SqlDataAdapter matchInfoDA = new SqlDataAdapter(matchInfoCMD);
+            SqlCommandBuilder matchInfoCMDB = new SqlCommandBuilder(matchInfoDA);
+            DataSet dataSet = new DataSet();
+            matchInfoDA.Fill(dataSet);
             SqlDataReader matchInfoReader = matchInfoCMD.ExecuteReader();
+            if (matchInfoReader.HasRows)
+            {
+                //matchInfoLabel.Text = "All the matchInfo";
+                availableMatchesGridView.AutoGenerateColumns = true;
+                availableMatchesGridView.DataSource = dataSet;
+                availableMatchesGridView.DataBind();
+
+            }
+            else
+            {
+                checkLabel.Text = "There's no matches available";
+            }
+
+            //SqlCommand matchInfoCMD = new SqlCommand(matchInfoQuery, db.con);
+            //SqlDataReader matchInfoReader = matchInfoCMD.ExecuteReader();
             while (matchInfoReader.Read())
             {
                 hostName = matchInfoReader["Host"].ToString();
@@ -70,11 +89,11 @@ namespace WebApplication1.Views
 
 
 
-            for (int i = 1; i < 11; i++)
-            {
-                ListItem tickets = new ListItem("" + i);
-                TicketsDropDownList.Items.Add(tickets);
-            }
+            //for (int i = 1; i < 11; i++)
+            //{
+            //    ListItem tickets = new ListItem("" + i);
+            //    TicketsDropDownList.Items.Add(tickets);
+            //}
 
 
         }
@@ -85,11 +104,13 @@ namespace WebApplication1.Views
             //no of tickets
             //buy it
 
-            if(TicketsDropDownList.Text == "No of tickets")
-            {
-                MessageBox.Show("please select the number of tickets you'd live to buy");
-                return;
-            }
+            //if(TicketsDropDownList.Text == "No of tickets")
+            //{
+            //    MessageBox.Show("please select the number of tickets you'd live to buy");
+            //    return;
+            //}
+
+
 
             string nationaID = "";
 
@@ -102,38 +123,61 @@ namespace WebApplication1.Views
             }
             nationaIDReader.Close();
 
-            int noOfTickets = Convert.ToInt32(TicketsDropDownList.Text);
+            if(selectedMatchDropDownList.Text == "Match")
+            {
+                MessageBox.Show("Select your match");
+                return;
+            }
+
+            if(startTime == "")
+            {
+                MessageBox.Show("Tickets are sold out :(");
+                return ;
+            }
 
             DateTime sTime = DateTime.Parse(startTime);
             string sTimeRight = sTime.ToString("yyyy/MM/dd HH:mm");
 
-            for(int i = 0; i < noOfTickets; i++)
+            string checkTicketQuery = "select t.*\r\nfrom Ticket t inner join Match m on m.ID = t.ID\r\n\tinner join Club host on m.Host_ID = host.ID\r\nwhere m.startTime = '" + sTimeRight + "' and host.clubName = '" + hostName + "'";
+            SqlCommand checkTicketCMD = new SqlCommand(checkTicketQuery, db.con);
+            SqlDataReader checkTicketReader = checkTicketCMD.ExecuteReader();
+            if (!checkTicketReader.Read())
             {
-                int counterTickets = 0;
-                string counterTicketsQuery = "select count(*) as ID\r\nfrom Ticket t inner join availableMatchesToAttend('" + WebForm10.st + "') ama on ama.matchID = t.Match_ID\r\nwhere t.ticketStatus = '1'";
-                SqlCommand counterTicketsCMD = new SqlCommand(counterTicketsQuery, db.con);
-                SqlDataReader counterTicketsReader = counterTicketsCMD.ExecuteReader();
-                while (counterTicketsReader.Read())
-                {
-                    counterTickets = Convert.ToInt32(counterTicketsReader["ID"].ToString());
-                }
-                counterTicketsReader.Close();
-
-                if(counterTickets < 1)
-                {
-                    MessageBox.Show("Tickets are sold out :(");
-                    MessageBox.Show("purchased " + i+1 + " tickets");
-                    return;
-                }
-
-                string buyQuery = "exec purchaseTicket '"+ nationaID +"', '"+ hostName +"', '"+ guestName +"', '"+ sTimeRight +"'";
-                SqlCommand buyCMD = new SqlCommand(buyQuery, db.con);
-                SqlDataReader buyReader = buyCMD.ExecuteReader();
-                buyReader.Close();
+                MessageBox.Show("Tickets are sold out :(");
+                checkTicketReader.Close();
+                return;
             }
+            checkTicketReader.Close();
+
+            //for(int i = 0; i < noOfTickets; i++)
+            //{
+            //    int counterTickets = 0;
+            //    string counterTicketsQuery = "select count(*) as ID\r\nfrom Ticket t inner join availableMatchesToAttend('" + WebForm10.st + "') ama on ama.matchID = t.Match_ID\r\nwhere t.ticketStatus = '1'";
+            //    SqlCommand counterTicketsCMD = new SqlCommand(counterTicketsQuery, db.con);
+            //    SqlDataReader counterTicketsReader = counterTicketsCMD.ExecuteReader();
+            //    while (counterTicketsReader.Read())
+            //    {
+            //        counterTickets = Convert.ToInt32(counterTicketsReader["ID"].ToString());
+            //    }
+            //    counterTicketsReader.Close();
+
+            //    if(counterTickets < 1)
+            //    {
+            //        MessageBox.Show("Tickets are sold out :(");
+            //        MessageBox.Show("purchased " + i+1 + " tickets");
+            //        return;
+            //    }
 
 
-            MessageBox.Show("Purchased " + noOfTickets + " tickets successfully");
+
+            string buyQuery = "exec purchaseTicket '" + nationaID + "', '" + hostName + "', '" + guestName + "', '" + sTimeRight + "'";
+            SqlCommand buyCMD = new SqlCommand(buyQuery, db.con);
+            SqlDataReader buyReader = buyCMD.ExecuteReader();
+            buyReader.Close();
+            //}
+
+
+            MessageBox.Show("Purchased a ticket successfully");
 
 
 

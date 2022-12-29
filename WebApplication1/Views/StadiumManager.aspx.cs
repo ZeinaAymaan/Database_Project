@@ -66,6 +66,12 @@ namespace WebApplication1.Views
 
         protected void acceptButton_Click(object sender, EventArgs e)
         {
+            if(requestDropDownList.Text == "Choose Request")
+            {
+                System.Windows.Forms.MessageBox.Show("Choose your request");
+                return;
+            }
+
             string splittingRequest = requestDropDownList.Text;
             String[] spearator = { " vs ", " at " };
             String[] strList = splittingRequest.Split(spearator, 3, StringSplitOptions.RemoveEmptyEntries);
@@ -76,6 +82,8 @@ namespace WebApplication1.Views
 
             DateTime sDate = DateTime.Parse(startTime);
             string correctStartTime = sDate.ToString("yyyy/MM/dd HH:mm");
+
+
 
             string checkStatusQuery = "select *\r\nfrom allPendingRequests('"+ WebForm1.usernamee + "') where GuestClubName = '"+ guest +"' and startTime = '"+ correctStartTime +"'";
             SqlCommand checkStatusCMD = new SqlCommand(checkStatusQuery, db.con);
@@ -98,6 +106,12 @@ namespace WebApplication1.Views
 
         protected void rejectButton_Click(object sender, EventArgs e)
         {
+            if (requestDropDownList.Text == "Choose Request")
+            {
+                System.Windows.Forms.MessageBox.Show("Choose your request");
+                return;
+            }
+
             string splittingRequest = requestDropDownList.Text;
             String[] spearator = { " vs ", " at " };
             String[] strList = splittingRequest.Split(spearator, 3, StringSplitOptions.RemoveEmptyEntries);
@@ -108,6 +122,8 @@ namespace WebApplication1.Views
 
             DateTime sDate = DateTime.Parse(startTime);
             string correctStartTime = sDate.ToString("yyyy/MM/dd HH:mm");
+
+
 
             string checkStatusQuery = "select *\r\nfrom allPendingRequests('" + WebForm1.usernamee + "') where GuestClubName = '" + guest + "' and startTime = '" + correctStartTime + "'";
             SqlCommand checkStatusCMD = new SqlCommand(checkStatusQuery, db.con);
