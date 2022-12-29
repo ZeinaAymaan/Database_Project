@@ -29,6 +29,8 @@
         <br />
         Club Location&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Label ID="Label3" runat="server" ></asp:Label>
+        <br />
+        <br />
         <asp:Panel ID="Panel1" runat="server" style="margin-bottom: 85px" Height="1013px">
             <asp:MultiView ID="MultiView1" runat="server" >
                 <asp:View ID="View1" runat="server">
@@ -46,7 +48,23 @@
                         <SortedDescendingHeaderStyle BackColor="#00547E" />
                     </asp:GridView>
                     <br />
+                    <asp:Button ID="Button2" runat="server" OnClick="Button2_Click" Text=" Wanna Host a Match? " />
                     <br />
+                    <asp:MultiView ID="MultiView3" runat="server">
+                        <asp:View ID="View4" runat="server">
+                            <asp:DropDownList ID="DropDownList3" runat="server">
+                                <asp:ListItem Selected="True">Stadium Name</asp:ListItem>
+                            </asp:DropDownList>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:DropDownList ID="DropDownList4" runat="server">
+                                <asp:ListItem>Match to Host</asp:ListItem>
+                            </asp:DropDownList>
+                            <br />
+                            <br />
+                            <asp:Button ID="Button3" runat="server" OnClick="Button3_Click" Text="Host Match" />
+                            <br />
+                        </asp:View>
+                    </asp:MultiView>
                     <br />
                 </asp:View>
             </asp:MultiView>
@@ -56,7 +74,7 @@
                        <asp:Label ID="Label5" runat="server" Text="View Available Stadiums On:"></asp:Label>
                        <br />
                        <br />
-                       <asp:Calendar ID="Calendar1" runat="server" BackColor="White" BorderColor="#3366CC" BorderWidth="1px" CellPadding="1" DayNameFormat="Shortest" Font-Names="Verdana" Font-Size="8pt" ForeColor="#003399" Height="200px" Width="220px">
+                       <asp:Calendar ID="Calendar1" runat="server" BackColor="White" BorderColor="#3366CC" BorderWidth="1px" CellPadding="1" DayNameFormat="Shortest" Font-Names="Verdana" Font-Size="8pt" ForeColor="#003399" Height="200px" Width="220px" OnSelectionChanged="Calendar1_SelectionChanged">
                            <DayHeaderStyle BackColor="#99CCCC" ForeColor="#336666" Height="1px" />
                            <NextPrevStyle Font-Size="8pt" ForeColor="#CCCCFF" />
                            <OtherMonthDayStyle ForeColor="#999999" />
@@ -93,20 +111,7 @@
                            <SortedDescendingCellStyle BackColor="#CAC9C9" />
                            <SortedDescendingHeaderStyle BackColor="#000065" />
                        </asp:GridView>
-                       <br />
-                       <asp:Button ID="Button2" runat="server" Text="Host a Match" OnClick="Button2_Click" />
-                   </asp:View>
-                   <asp:View ID="View4" runat="server">
-                       <asp:DropDownList ID="DropDownList3" runat="server">
-                           <asp:ListItem Selected="True">Stadium Name</asp:ListItem>
-                       </asp:DropDownList>
-                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                       <asp:DropDownList ID="DropDownList4" runat="server">
-                           <asp:ListItem>Match to Host</asp:ListItem>
-                       </asp:DropDownList>
-                       <br />
-                       <br />
-                       <asp:Button ID="Button3" runat="server" Text="Host Match" OnClick="Button3_Click" />
+                       <asp:Button ID="Button4" runat="server" Text="Try Another Date?" OnClick="Button4_Click" />
                        <br />
                    </asp:View>
         </asp:MultiView>

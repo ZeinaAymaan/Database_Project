@@ -15,25 +15,33 @@ namespace WebApplication1.Views
 {
     public partial class WebForm8 : System.Web.UI.Page
     {
+        string username = WebForm1.usernamee;
+        string cname = "";
         protected void Page_Load(object sender, EventArgs e)
         {
             db.openConnection();
-            string username = WebForm1.usernamee;
-            string viewClubInfoQuery = "select c.ID, c.clubName, c.clubLocation\r\nfrom Club as c inner join clubRepresentative as cr on c.ID=cr.club_ID\r\nwhere cr.Username  = '" + username + "';";
-            SqlCommand clubinfo = new SqlCommand(viewClubInfoQuery, db.con);
-            SqlDataReader clubinforeader = clubinfo.ExecuteReader();
-            while (clubinforeader.Read())
-            {
-                Label1.Text = clubinforeader["ID"].ToString();
-                Label2.Text = (string)clubinforeader["clubName"];
-                Label3.Text = (string)clubinforeader["clubLocation"];
-            }
-            clubinforeader.Close();
 
-            MultiView1.ActiveViewIndex = 0;
+            string viewClubInfoQuery = "select c.ID, c.clubName, c.clubLocation\r\nfrom Club as c inner join clubRepresentative as cr on c.ID=cr.club_ID\r\nwhere cr.clubRepresentativeUsername  = '" + username + "';";
+            SqlCommand clubinfo = new SqlCommand(viewClubInfoQuery, db.con);
+            using (SqlDataReader clubinforeader = clubinfo.ExecuteReader())
+            {
+                while (clubinforeader.Read())
+                {
+                    Label1.Text = clubinforeader["ID"].ToString();
+                    Label2.Text = (string)clubinforeader["clubName"];
+                    Label3.Text = (string)clubinforeader["clubLocation"];
+                }
+                clubinforeader.Close();
+            }
+            cname = Label2.Text.ToString();
+            loadC();
+            return;
+        }
+        protected void loadC()
+        {   MultiView1.ActiveViewIndex = 0;
             //MultiView1.ActiveViewIndex= 1;
-            string viewUpcominClubMatchesQuery = "select HostName as 'Host club', GuestName as 'Guest club', m.startTime as 'Start Time', m.endTime 'End Time', stadiumname as 'Stadium Name'\r\n" +
-           "from upcomingMatchesOfClub ('" + Label2.Text + "') inner join Club c on HostName= c.clubName inner join Match m on c.ID=m.Host_ID";
+            string viewUpcominClubMatchesQuery = "select c1name as 'Host club', c2name as 'Guest club', m.startTime as 'Start Time', m.endTime 'End Time', stadiumname as 'Stadium Name'\r\n" +
+           "from upcomingMatchesOfClub ('" + cname + "') inner join Club c on c1name= c.clubName inner join Match m on c.ID=m.Host_ID";
             SqlCommand viewUpcomingClubinfo = new SqlCommand(viewUpcominClubMatchesQuery, db.con);
             SqlDataAdapter da = new SqlDataAdapter(viewUpcomingClubinfo);
             SqlCommandBuilder cb = new SqlCommandBuilder(da);
@@ -81,7 +89,6 @@ namespace WebApplication1.Views
                 }
             }
 
-
         }
 
         protected void Button1_Click(object sender, EventArgs e)
@@ -101,7 +108,7 @@ namespace WebApplication1.Views
 
             MultiView2.ActiveViewIndex++;
             string st = stadiumDate.ToString("yyyy/MM/dd") + " " + DropDownList1.Text + ":" + DropDownList2.Text +":00";
-            string viewAvailableStadQuery = "select stadiumName 'Stadium Name', stadiumLocation 'Stadium Location', Capacity from viewAvailableStadiumsOn('" + st +"')";
+            string viewAvailableStadQuery = "select sname 'Stadium Name', sloc 'Stadium Location', cap 'Capacity' from viewAvailableStadiumsOn('" + st +"')";
             SqlCommand viewStadinfo = new SqlCommand(viewAvailableStadQuery, db.con);
             SqlDataAdapter StadInfoDA = new SqlDataAdapter(viewStadinfo);
             SqlCommandBuilder cb = new SqlCommandBuilder(StadInfoDA);
@@ -116,24 +123,33 @@ namespace WebApplication1.Views
                 GridView2.DataBind();
 
             }
+            
             else
             {
-                Label6.Text = "There are no available stadiums on " + st + ".";
+                Label6.Text = "There are no available stadiums on "+st+".";
+                
             }
-            while (Stadinforeader.Read())
-            {
-                DropDownList3.Items.Add(Stadinforeader["Stadium Name"].ToString());
-            }
-            
             Stadinforeader.Close();
+
         }
 
         protected void Button2_Click(object sender, EventArgs e)
         {
-            MultiView2.ActiveViewIndex=2;
-            DateTime stadiumDate = Calendar1.SelectedDate;
-            string st = stadiumDate.ToString("yyyy/MM/dd") + " " + DropDownList1.Text + ":" + DropDownList2.Text + ":00";
-            string matchInfoQuery = "select c1.clubName 'Host',c2.clubName 'Guest', Match.startTime \r\n from Match inner join Club c1 on c1.ID = Match.host_ID inner join Club c2 on c2.ID = Match.guest_ID \r\n where Match.startTime > CURRENT_TIMESTAMP AND c1.clubName ='" + Label2.Text.ToString() + "'";
+            MultiView3.ActiveViewIndex=0;
+            Button2.Visible= false;
+            string viewAllStadQuery = "select stadiumName from Stadium s inner join stadiumManager sm on s.ID=sm.Stadium_ID";
+            SqlCommand viewAllStadinfo = new SqlCommand(viewAllStadQuery, db.con);
+            SqlDataAdapter allStadInfoDA = new SqlDataAdapter(viewAllStadinfo);
+            SqlCommandBuilder cb = new SqlCommandBuilder(allStadInfoDA);
+            DataSet stadiumsDataSet = new DataSet();
+            allStadInfoDA.Fill(stadiumsDataSet);
+            SqlDataReader allStadinforeader = viewAllStadinfo.ExecuteReader();
+            while (allStadinforeader.Read())
+            {
+                DropDownList3.Items.Add(allStadinforeader["stadiumName"].ToString());
+            }
+            allStadinforeader.Close();
+            string matchInfoQuery = "select c1.clubName 'Host',c2.clubName 'Guest', Match.startTime \r\n from Match inner join Club c1 on c1.ID = Match.host_ID inner join Club c2 on c2.ID = Match.guest_ID \r\n where Match.startTime > CURRENT_TIMESTAMP AND Match.stadium_Id IS NULL AND c1.clubName ='" + cname + "'";
             SqlCommand matchInfoCMD = new SqlCommand(matchInfoQuery, db.con);
             SqlDataReader matchInfoReader = matchInfoCMD.ExecuteReader();
             while (matchInfoReader.Read())
@@ -151,10 +167,88 @@ namespace WebApplication1.Views
 
         protected void Button3_Click(object sender, EventArgs e)
         {
-            DateTime stadiumDate = Calendar1.SelectedDate;
-            string st = stadiumDate.ToString("yyyy/MM/dd") + " " + DropDownList1.Text + ":" + DropDownList2.Text + ":00";
-            string matchInfoQuery = "exec addHostRequest '" + Label2.Text.ToString() + "', '"+DropDownList3.Text+"', '"+st+"'";
+            if(DropDownList3.Text.Equals("Stadium Name")|| DropDownList4.Text.Equals("Match to Host"))
+            {
+                MessageBox.Show("Please Select a Stadium Name And a Match Before Proceeding");
+                return;
+            }
+            string st="";
+           
+            string getTeamss = DropDownList4.Text.ToString();
+            string[] separator = { " vs ", " starts at: " };
+            String[] getTeams=getTeamss.Split(separator,3,StringSplitOptions.RemoveEmptyEntries);
+            string team1 = getTeams[0];
+            string team2 = getTeams[1];
+            st = getTeams[2];
+            //int j = 0;
+            //for (j=0 ; j <= getTeams.Length - 1; j++)
+            //{
+            //    if (getTeams[j].Equals("vs"))
+            //        break;
+            //    team1 += getTeams[j];
+            //}
+            //j++;
+            //while (j < getTeams.Length)
+            //{
+            //    if (getTeams[j].Equals("starts"))
+            //        break;
+            //    team2 += getTeams[j];
+            //}
+            //j+=3;
+            //while (j < getTeams.Length)
+            //{
+            //    st+= getTeams[j];
+            //}
+            DateTime stDate = DateTime.Parse(st);
+            string stCorrect = stDate.ToString("yyyy/MM/dd HH:mm");
+            string crname="";
+            string viewClubRepNameQuery = "select Name \r\n from allClubRepresentatives \r\n where Username  = '" + username + "';";
+            SqlCommand viewClubRepinfo = new SqlCommand(viewClubRepNameQuery, db.con);
+            SqlDataReader clubrepinforeader = viewClubRepinfo.ExecuteReader();
+            while (clubrepinforeader.Read())
+            {
+                crname= (string)clubrepinforeader["Name"];
+            }
+            clubrepinforeader.Close();
+
+            string staduser = "";
+            string viewStadUserQuery = "select Username from allStadiumManagers Where [Stadium Managed]='" + DropDownList3.Text + "'";
+            SqlCommand stadUserCommand = new SqlCommand(viewStadUserQuery, db.con);
+            SqlDataReader stadUserreader = stadUserCommand.ExecuteReader();
+            while(stadUserreader.Read())
+            {
+                staduser = stadUserreader["Username"].ToString();
+                break;
+            }
+            stadUserreader.Close();
+            string alreadyCheckQuery = "select * from allPendingRequests('"+staduser+"') WHERE rname='" + crname + "' AND gcname='"+team2+"' AND starttime='"+st+"'";
+            SqlCommand alreadyCommand=new SqlCommand(alreadyCheckQuery, db.con);
+            SqlDataReader alreadyreader=alreadyCommand.ExecuteReader();
+            if(alreadyreader.HasRows)
+            {
+
+                MessageBox.Show("You Have already sent a request to Host This Match");
+                return;
+            }
+            alreadyreader.Close();
+            
+            string matchInfoQuery = "exec addHostRequest '"+cname+"', '" + DropDownList3.Text +"', '"+stCorrect+"'";
             SqlCommand matchInfoCMD = new SqlCommand(matchInfoQuery, db.con);
+            SqlDataReader matchreader = matchInfoCMD.ExecuteReader();
+            matchreader.Close();
+            MessageBox.Show("Request Sent Successfully");
+            return;
+        }
+
+        protected void Button4_Click(object sender, EventArgs e)
+        {
+            loadC();
+            return;
+        }
+
+        protected void Calendar1_SelectionChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
