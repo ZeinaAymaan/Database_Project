@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using System.Windows.Forms;
 
 namespace WebApplication1.Views
 {
     public partial class WebForm14 : System.Web.UI.Page
     {
-
-        //WebForm10 fan2 = new WebForm10();
-        //public WebForm10.matchTime time { get; set; }
-
-        //public WebForm14(WebForm10.matchTime time)
-        //{
-        //    this.time = time;
-
-        //}
+        public string hostName = "";
+        public string guestName = "";
+        public string stadiumName = "";
+        public string startTime = "";
+        public string stadiumLocation = "";
+        public string matchInfo = "";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -29,41 +28,54 @@ namespace WebApplication1.Views
 
             //sql query to get the number of available tickets
 
-            SqlDataSource1.SelectCommand = "SELECT availableMatchesToAttend_1.ID, availableMatchesToAttend_1.Host, availableMatchesToAttend_1.Guest, availableMatchesToAttend_1.stadiumName, Stadium.stadiumLocation \r\nFROM Stadium INNER JOIN dbo.availableMatchesToAttend(" + WebForm10.stDate +") AS availableMatchesToAttend_1 ON Stadium.stadiumName = availableMatchesToAttend_1.stadiumName";
-            string counter = "";
+            //SqlDataSource1.SelectCommand = "SELECT availableMatchesToAttend_1.ID, availableMatchesToAttend_1.Host, availableMatchesToAttend_1.Guest, availableMatchesToAttend_1.stadiumName, Stadium.stadiumLocation \r\nFROM Stadium INNER JOIN dbo.availableMatchesToAttend('" + WebForm10.st +"') AS availableMatchesToAttend_1 ON Stadium.stadiumName = availableMatchesToAttend_1.stadiumName";
+            //string counter = "";
 
-            string counterQuery = "select count(ID) as ID\r\nfrom availableMatchesToAttend('"+ WebForm10.stDate +"')";
-            SqlCommand counterCMD = new SqlCommand(counterQuery, db.con);
-            SqlDataReader counterReader = counterCMD.ExecuteReader();
-            while (counterReader.Read())
+            //string dataSourceQuery = "SELECT ama.Host, ama.Guest, ama.stadiumName, s.stadiumLocation \r\nFROM Stadium s INNER JOIN dbo.availableMatchesToAttend('"+ WebForm10.st +"') AS ama ON s.stadiumName = ama.stadiumName\r\n";
+            //SqlDataSource1.SelectCommand = dataSourceQuery;
+
+            
+
+            string matchInfoQuery = "select Host, Guest, ama.startTime, s.stadiumName, s.stadiumLocation\r\nfrom availableMatchesToAttend('"+ WebForm10.st +"') ama inner join stadium s on s.stadiumName = ama.stadiumName";
+            //System.Windows.Forms.MessageBox.Show(WebForm10.stDate + "");
+            //string guestNameQuery = "select Guest\r\nfrom availableMatchesToAttend('" + WebForm10.stDate + "')";
+            //string startTimeQuery = "select startTime\r\nfrom availableMatchesToAttend('" + WebForm10.stDate + "')";
+
+            //SqlCommand matchInfoDCMD = new SqlCommand(dataSourceQuery, db.con);
+            //SqlDataAdapter matchInfoDa = new SqlDataAdapter(matchInfoDCMD);
+            //SqlCommandBuilder matchInfoDCB = new SqlCommandBuilder(matchInfoDa);
+            //DataSet matchInfoDataSet = new DataSet();
+            //matchInfoDa.Fill(matchInfoDataSet);
+            //GridView1.DataSource = matchInfoDataSet;
+            //GridView1.DataBind();
+
+            SqlCommand matchInfoCMD = new SqlCommand(matchInfoQuery, db.con);
+            SqlDataReader matchInfoReader = matchInfoCMD.ExecuteReader();
+            while (matchInfoReader.Read())
             {
-                counter = counterReader["ID"].ToString();
+                hostName = matchInfoReader["Host"].ToString();
+                guestName = matchInfoReader["Guest"].ToString();
+                startTime = matchInfoReader["startTime"].ToString();
+                stadiumName = matchInfoReader["stadiumName"].ToString();
+                stadiumLocation = matchInfoReader["stadiumLocation"].ToString();
+                matchInfo = hostName + " vs " + guestName + " starts at: " + startTime + " on " + stadiumName + ", " + stadiumLocation;
+                selectedMatchDropDownList.Items.Add(matchInfo);
             }
-            counterReader.Close();
+            matchInfoReader.Close();
 
-            for(int i = 0; i < Convert.ToInt32(counter); i++)
-            {
-                ListItem matchID = new ListItem("" + i);
-                selectedMatchDropDownList.Items.Add(matchID);
-            }
 
-            string counterTickets = "";
-            string matchSelected = selectedMatchDropDownList.Text;
+            //string counterTickets = "";
+            //string matchSelected = selectedMatchDropDownList.Text;
 
-            string counterTicketsQuery = "select count(Ticket.ID) as ID\r\nfrom Ticket t inner join availableMatchesToAttend('"+ WebForm10.stDate +"') ama on ama.matchID = t.Match_ID\r\nwhere t.ticketStatus = '1' and ama.ID = "+ Convert.ToInt32(matchSelected);
-            SqlCommand counterTicketsCMD = new SqlCommand(counterTicketsQuery, db.con);
-            SqlDataReader counterTicketsReader = counterTicketsCMD.ExecuteReader();
-            while (counterTicketsReader.Read())
-            {
-                counterTickets = counterTicketsReader["ID"].ToString();
-            }
-            counterTicketsReader.Close();
 
-            for (int i = 00; i < Convert.ToInt32(counterTickets); i++)
+
+
+            for (int i = 1; i < 11; i++)
             {
                 ListItem tickets = new ListItem("" + i);
                 TicketsDropDownList.Items.Add(tickets);
             }
+
 
         }
 
@@ -73,15 +85,65 @@ namespace WebApplication1.Views
             //no of tickets
             //buy it
 
+            if(TicketsDropDownList.Text == "No of tickets")
+            {
+                MessageBox.Show("please select the number of tickets you'd live to buy");
+                return;
+            }
+
             string nationaID = "";
+
             string nationalIDquery = "select [National ID]\r\nfrom allFans \r\nwhere Username = '"+ WebForm1.usernamee +"'";
-            SqlCommand nationaIDCMD = new SqlCommand(nationalIDquery, db.con);
-            SqlDataReader nationaIDReader = nationaIDCMD.ExecuteReader();
+            SqlCommand nationalIDCMD = new SqlCommand(nationalIDquery, db.con);
+            SqlDataReader nationaIDReader = nationalIDCMD.ExecuteReader();
             while (nationaIDReader.Read())
             {
                 nationaID = nationaIDReader["National ID"].ToString();
             }
             nationaIDReader.Close();
+
+            int noOfTickets = Convert.ToInt32(TicketsDropDownList.Text);
+
+            DateTime sTime = DateTime.Parse(startTime);
+            string sTimeRight = sTime.ToString("yyyy/MM/dd HH:mm");
+
+            for(int i = 0; i < noOfTickets; i++)
+            {
+                int counterTickets = 0;
+                string counterTicketsQuery = "select count(*) as ID\r\nfrom Ticket t inner join availableMatchesToAttend('" + WebForm10.st + "') ama on ama.matchID = t.Match_ID\r\nwhere t.ticketStatus = '1'";
+                SqlCommand counterTicketsCMD = new SqlCommand(counterTicketsQuery, db.con);
+                SqlDataReader counterTicketsReader = counterTicketsCMD.ExecuteReader();
+                while (counterTicketsReader.Read())
+                {
+                    counterTickets = Convert.ToInt32(counterTicketsReader["ID"].ToString());
+                }
+                counterTicketsReader.Close();
+
+                if(counterTickets < 1)
+                {
+                    MessageBox.Show("Tickets are sold out :(");
+                    MessageBox.Show("purchased " + i+1 + " tickets");
+                    return;
+                }
+
+                string buyQuery = "exec purchaseTicket '"+ nationaID +"', '"+ hostName +"', '"+ guestName +"', '"+ sTimeRight +"'";
+                SqlCommand buyCMD = new SqlCommand(buyQuery, db.con);
+                SqlDataReader buyReader = buyCMD.ExecuteReader();
+                buyReader.Close();
+            }
+
+
+            MessageBox.Show("Purchased " + noOfTickets + " tickets successfully");
+
+
+
+            //SqlDataReader nationaIDReader = nationaIDCMD.ExecuteReader();
+            //while (nationaIDReader.Read())
+            //{
+
+            //    nationaID = nationaIDReader["National ID"].ToString();
+            //}
+            //nationaIDReader.Close();
 
 
 
